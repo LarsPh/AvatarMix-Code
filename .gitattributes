@@ -1,0 +1,5 @@
+neus2/dependencies/** linguist-vendored
+**/third_party/** linguist-vendored
+sam3/** linguist-vendored
+**/doc/api/** linguist-generated
+neus2/dependencies/neus2_tcnn/dependencies/cutlass/docs/** linguist-generated
