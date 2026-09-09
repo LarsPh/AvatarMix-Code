@@ -1,0 +1,73 @@
+[project]
+name = "splattingavatar"
+version = "0.1.0"
+description = "SplattingAvatar: Realistic Real-Time Human Avatars with Mesh-Embedded Gaussian Splatting"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch==2.7.1",
+    "torchvision==0.22.1",
+    "tqdm",
+    "omegaconf",
+    "opencv-python",
+    "libigl",
+    "trimesh",
+    "plyfile",
+    "imageio",
+    "chumpy",
+    "lpips",
+    "packaging",
+    "pybind11",
+    "numpy==1.23.1",
+    "pytorch3d",
+    "loguru",
+    "pymeshlab==2023.12",
+    "libigl==2.5.1",
+    "simple_knn",
+    "diff-gaussian-rasterization",
+    "simple_phongsurf",
+    "reshape_ops",
+    "setuptools<81",
+    "tinycudann",
+    "tensorboard",
+    "cumm-cu126==0.7.11",
+    "spconv-cu126==2.3.8",
+    "psutil",
+    "flash-attn",
+    "torch-scatter",
+    "addict",
+    "timm",
+    "huggingface-hub",
+    "colorhash",
+]
+
+[build-system]
+requires = ["setuptools<81", "wheel", "pip"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = []
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu128" },
+]
+torchvision = [
+    { index = "pytorch-cu128" },
+]
+pytorch3d = { git = "https://github.com/facebookresearch/pytorch3d.git", rev = "cbcae096a0b9b04f7c515d11bb4285a82e96b8d7" }
+simple_knn = { path = "./submodules/simple-knn" }
+diff-gaussian-rasterization = { path = "./submodules/diff-gaussian-rasterization" }
+simple_phongsurf = { path = "./model/simple_phongsurf" }
+reshape_ops = { path = "./model/reshaping/reshape_ops" }
+tinycudann = { git = "https://github.com/NVlabs/tiny-cuda-nn.git", rev = "2e757bbe781db59c4980d389d7dccbf5edc09669", subdirectory = "bindings/torch" }
+flash-attn = { git = "https://github.com/Dao-AILab/flash-attention.git", rev = "c04a8080dcfa7d010f5c39ad0a523eceda695706" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv]
+no-build-isolation-package = ["pytorch3d", "chumpy", "simple_phongsurf", "simple_knn", "diff-gaussian-rasterization", "reshape_ops", "tinycudann", "flash-attn", "torch-scatter"]
+find-links = ["https://data.pyg.org/whl/torch-2.7.1+cu128.html"]

@@ -1,0 +1,15 @@
+# @package _global_
+
+logger:
+  _target_: lightning.pytorch.loggers.wandb.WandbLogger
+  name: ${name}_${exp_suffix}_${now:%Y-%m-%d_%H-%M-%S}
+  save_dir: ${paths.output_dir}
+  offline: true
+  id: null
+  anonymous: null
+  project: avatarmix
+  log_model: false
+  prefix: ''
+  group: ''
+  tags: ${tags}
+  job_type: ''

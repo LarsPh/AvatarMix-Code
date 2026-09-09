@@ -1,0 +1,6 @@
+# @package _global_
+
+extras:
+  ignore_warnings: false
+  enforce_tags: true
+  print_config: true

@@ -1,0 +1,52 @@
+dataset:
+  dat_dir: ''
+  frameset_type: avatarrex
+  data_device: cpu
+  num_workers: 1
+  avatarrex_config:
+    use_smpl_params: false
+    model_type: smplx
+    gender: neutral
+    smpl_num_pca_comps: 12
+    smpl_use_pca: true
+    flat_hand_mean: false
+    frame_format_digits: 4
+    train_frames:
+      start_idx: 0
+      end_idx: 1
+      step_idx: 1
+    val_frames:
+      start_idx: 0
+      end_idx: 1
+      step_idx: 1
+    val_cameras: null
+    test_frames:
+      start_idx: 0
+      end_idx: 1
+      step_idx: 1
+    test_cameras: null
+model:
+  with_mesh_scaling: false
+  num_init_samples: 100000
+optim:
+  lambda_scaling: 0.0
+  lambda_rgb_mse: 10.0
+  lambda_ssim: 0.0
+  lambda_lpips: 0.01
+  total_iteration: 5000
+  save_every_iter: 1000
+  testing_iterations:
+  - 1000
+  - 2000
+  - 3000
+  - 4000
+  - 5000
+  densify_grad_threshold: 0.0002
+  min_opacity: 0.005
+  densify_from_iter: 500
+  densification_interval: 100
+  densify_until_iter: 9000
+  opacity_reset_start_iter: 1100
+  opacity_reset_interval: 1100
+pipe:
+  debug: false

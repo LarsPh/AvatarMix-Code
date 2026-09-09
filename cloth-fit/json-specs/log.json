@@ -1,0 +1,47 @@
+[
+    {
+        "pointer": "/",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "level",
+            "file_enabled",
+            "file_path"
+        ],
+        "doc": "Setting for the output log."
+    },
+    {
+        "pointer": "/file_enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, also write logs to a file."
+    },
+    {
+        "pointer": "/file_path",
+        "type": "string",
+        "default": "",
+        "doc": "Optional log file path. If empty and file_enabled=true, defaults to <output>/run.log."
+    },
+    {
+        "pointer": "/level",
+        "type": "int",
+        "min": 0,
+        "max": 6,
+        "doc": "Level of logging, 0 trace, 1 debug, 2 info, 3 warning, 4 error, 5 critical, and 6 off."
+    },
+    {
+        "pointer": "/level",
+        "default": "debug",
+        "type": "string",
+        "options": [
+            "trace",
+            "debug",
+            "info",
+            "warning",
+            "error",
+            "critical",
+            "off"
+        ],
+        "doc": "Level of logging."
+    }
+]

@@ -1,0 +1,389 @@
+data_type: thuman2
+paths:
+  project_root: ${AVATARMIX_ROOT}/swapvton
+  thuman2_render_project: ${AVATARMIX_ROOT}/external_tools/thuman2_render
+  fourd_dress_project: ${AVATARMIX_ROOT}/4d-dress
+  robust_lbs_project: ${AVATARMIX_ROOT}/lbs_transfer
+  splatting_avatar_project: ${AVATARMIX_ROOT}/splatting
+  smpl_model_root: ${AVATARMIX_ASSET_ROOT}/smpl
+  neus2_project: ${AVATARMIX_ROOT}/neus2
+  difix3d_project: ${AVATARMIX_ROOT}/difix
+  sam3_project: ${AVATARMIX_ROOT}/sam3
+  thuman2_render_output: ${AVATARMIX_DATA_ROOT}/thuman2_repose/render
+  dataset_for_conversion: ${AVATARMIX_DATA_ROOT}/thuman2_repose
+  avatarrex_output: ${AVATARMIX_DATA_ROOT}/thuman2_avatarrex
+  neus2_output: ${AVATARMIX_DATA_ROOT}/thuman2_neus2
+  4d_dress_root: ${AVATARMIX_ROOT}/4d-dress
+  smplx_segmentation_json: ${AVATARMIX_ASSET_ROOT}/smplx_vert_segmentation.json
+  seamfixed_test_dir: ${AVATARMIX_DATA_ROOT}/thuman2_avatarrex/seamfixed_test
+pair_sampling:
+  pairs_dir: ${AVATARMIX_DATA_ROOT}/thuman2_avatarrex/pairs
+  subject_range: null
+  strategy: without_replacement
+  deduplicate_symmetric: true
+subjects:
+- '0365'
+- 0228
+read_gender_from_subject_root: true
+enable_rigid_head_reposing: false
+conda_envs:
+  thuman2_render: thuman2_render
+  neus2: neus2
+  fourd_dress: 4ddress
+  skw_transfer: skw_transfer
+  splatting: splatting
+  nerfstudio: nerfstudio
+pipeline_stages:
+  1_render_thuman:
+    headless: true
+    size: 1024
+    skip_existing: true
+  2_convert_to_avatarrex:
+    skip_existing: true
+  3_convert_to_neus2:
+    frame_padding: 8
+    max_frames: 2001
+    skip_existing: true
+  4_neus2_train:
+    config: thuman2_per_scene.json
+    output_dir_template: thuman2_sub{subject_id_padded}_60k_ek0.02/{subject_id_padded}
+    save_every_n_steps: 15000
+    skip_existing: true
+  5_copy_mesh:
+    mesh_path_template: thuman2_sub{subject_id_padded}_60k_ek0.02/{subject_id_padded}/transforms_0000/evaluation/mesh/scene_transforms_0000_frame_0000.obj
+    skip_existing: true
+  6_clean_mesh:
+    mesh_frame_idx: 0
+    dataset_type: thuman2
+    skip_existing: true
+  7_parse_mesh:
+    disable_sam_votes: false
+    disable_sam_inference: false
+    res_scale: 1
+    n_digit_padding: 4
+    outfit: Extended
+    first_frame: 0
+    save_sam_mask: false
+    sam_label_gain_scale: 1.0
+    enable_sam3_hands: false
+    sam3_hands_confidence: 0.8
+    sam3_hands_bbox_padding: 20
+    sam3_hands_prompt: hand
+    enable_shoes_label: true
+    skip_existing: false
+  7b_smplx_fitting:
+    enabled: true
+    fitting_config_template: src/scripts/smplx_fitting/alt_band_adam_thu2.yaml
+    neus_mesh_relpath: mesh/trimesh_cleaned/0000.obj
+    exp_name: thu2
+  8_process_mesh:
+    frame_step: 1
+    frame_format_digits: 4
+    dataset_type: thuman2
+    remove_head: false
+    create_simplified_mesh: true
+    simplification_target_percent: 0.4
+    save_skeleton_mesh: true
+    use_no_sam_labels: false
+    save_label_with_no_sam_suffix: false
+    generate_cloth_fit_skin_mask: true
+    save_smpl_joints: true
+    semantic_weighting:
+      enabled: true
+      mode: sum_threshold
+      thresholds:
+        chest: 0.3
+        hip: 0.3
+      dilate_rings: 1
+      min_component_size: 100
+      debug_ply: true
+    hands_gate_min_arm_verts: 300
+    hands_gate_min_arm_to_hands_ratio: 0.2
+    use_nerf_mesh_smoothing: true
+    no_torso_skin_for_skin_mask: true
+    emit_smpl_scale_inv: true
+  9_lbs_transfer:
+    target_mesh: full_nerf
+    frame_format_digits: 4
+    dataset_type: thuman2
+  10_splatting_avatar:
+    configs: configs/splatting_avatar.yaml;configs/thuman2.yaml
+    model_path_template: neusclean_sub{subject_id_padded}
+    iteration_a: 10000
+    iteration_b: 10000
+    iteration_default: 10000
+    batch_size_a: 1
+    batch_size_b: 1
+    batch_size_default: 1
+    skip_existing: true
+  11_reposing:
+    configs: configs/splatting_avatar.yaml;configs/thuman2.yaml
+    num_render_views: 16
+    enable_body_reshape: false
+    body_reshape_smoothing_samples: 64
+    body_reshape_sample_std_scale: 1.0
+    body_reshape_scale_factor: 1.5
+    body_reshape_distance_weighting: false
+    save_reshaping_meshes: true
+  12_swapping:
+    swap_both_directions: true
+    enable_body_reshape: false
+  11a_head_donator_reposing:
+    disable_renders: true
+    save_gt_aligned_head: true
+    enable_head_alignment_filtering: true
+    use_label_no_sam: false
+  11b_body_donator_reshaping:
+    enabled: true
+    enable_body_reshape: false
+    skip_existing: true
+  11c_cloth_fit_reshaping:
+    enabled: true
+    cloth_fit_project_root: ${AVATARMIX_ROOT}/cloth-fit
+    polyfem_build_type: Release
+    max_threads: 24
+    incremental_steps: 2
+    fit_weight: 1
+    curvature_penalty_weight: 0.0
+    twist_penalty_weight: 0.0
+    voxel_size: 0.01
+    skip_existing_mesh: false
+    skip_existing_reposing: true
+    skip_existing_restoration: false
+    skip_cloth_fit_simulation: false
+    enable_fit_weight_mask: true
+    remove_neck_from_fit_weight_mask: true
+    limb_no_hands_fit_weight_multiplier: 4.0
+    hands_skin_weight_multiplier: 0.01
+    feet_skin_weight_multiplier: 0.01
+    max_time: 60
+    restore_deformed_meshes: true
+    enable_no_fit_mask: false
+    enable_similarity_mask: true
+    hands_similarity_mask_weight: 2.0
+    feet_similarity_mask_weight: 2.0
+    enable_avatar_hand_removel_mask: true
+    cloth_fit_remove_feet: true
+    height_aware: true
+    height_aware_subject_scale: true
+    cloth_fit_suffix: _A1A2_semantic_height
+    step3_anneal:
+      enabled: true
+      r0: 0.2
+      a: 10.0
+      s1: 0.25
+      a2: 0.4
+      percentile: 0.9
+      tau: 0.008
+      d0: 0.0
+      check_every: 10
+      stall_eps: 0.01
+      stall_K: 8
+    area_aware_fit:
+      enabled: true
+      generate_trim_meshes: true
+      generate_correspondence: true
+      overwrite: true
+      nn_scale_factor: 1000.0
+      visualize_correspondence: true
+      corr_filename: area_aware_fit_corr.txt
+      lambda: 16.0
+      w_max: 10.0
+      d_gate: 0.05
+      enable_surf_relax: true
+      surf_k: 0.8
+      surf_min: 0.7
+      use_distance_gate: true
+      final_substep_only: true
+      cloth_fit_vis: true
+    semantic_weighting:
+      enabled: true
+      regions:
+        chest:
+          fit_mult: 2.5
+          sim_mult: 0.3
+        hip:
+          fit_mult: 2.0
+          sim_mult: 0.5
+      fit_weight_vis:
+        enabled: true
+        mask_only_filename: fit_weight_vertex_masks_only.ply
+        final_filename: fit_weight_vertex_masks_times_area.ply
+  12b_direct_swapping:
+    enabled: false
+    enable_body_reshape: false
+    use_cloth_fit_reshaped_gs: true
+    label_dir_name: labeled
+    save_body_donator_full_in_head_world: true
+    save_head_body_separation_debug: true
+    color_transfer_source_relative_neff_ratio: 0.05
+    swap_hands: false
+    merge_only: false
+    merge_maybe_patch_meshes:
+      enabled: true
+  13_render_swapped_gaussians:
+    enabled: true
+    render_splits: train,test,val
+    use_cloth_fit_reshaped_gs: true
+    frame_id: 0
+    canonical_front:
+      enabled: true
+      output_base: canonical_renders_full
+      fov_deg: 10.0
+      distance_margin: 1.1
+      distance_scale: 0.8
+      target_y_offset: 0.065
+      camera_z_sign: 1
+      camera_y_sign: -1
+      output_wh:
+      - 1024
+      - 1024
+      reference_mesh_path: ${AVATARMIX_DATA_ROOT}/thuman2_avatarrex/0365/mesh/processed/nerf_simp_cleaned.obj
+      iteration: 10000
+      views:
+      - id: yaw-85
+        yaw_deg: -85.0
+      - id: yaw-80
+        yaw_deg: -80.0
+      - id: yaw-75
+        yaw_deg: -75.0
+      - id: yaw-70
+        yaw_deg: -70.0
+  26_render_swapped_gt_head_aligned:
+    enabled: true
+    render_splits: train,test,val
+    frame_id: 0
+    output_base: head_swapped_renders
+    use_cloth_fit_reshaped_gs: true
+    use_label_no_sam: false
+  14_refine_rendered_images:
+    enabled: true
+    use_reference_images: false
+    batch_size: 2
+    create_separate_dataset: true
+    extract_masks: false
+  14a_extract_head_masks:
+    enabled: true
+    always_process_gt: true
+    process_swapped_data: refined
+    color_tolerance: 5
+    background_color:
+    - 0
+    - 0
+    - 0
+    skip_existing: true
+  15_convert_swapped_to_neus2:
+    enabled: true
+  16_neus2_train_swapped:
+    enabled: true
+    config: thuman2_per_scene.json
+    output_dir_template: '{subject_name}_60k_ek0.02/{subject_name}'
+    save_every_n_steps: 15000
+    use_white_background: false
+    skip_existing: true
+  17_copy_mesh_swapped:
+    enabled: true
+  18_clean_mesh_swapped:
+    enabled: true
+  19_parse_mesh_swapped:
+    enabled: true
+    disable_sam_votes: false
+    disable_sam_inference: false
+    res_scale: 1
+    n_digit_padding: 4
+    outfit: Extended
+    first_frame: 0
+    save_sam_mask: false
+    sam_label_gain_scale: 1.0
+    skip_existing: true
+  20_process_mesh_swapped:
+    enabled: true
+    frame_step: 1
+    frame_format_digits: 4
+    dataset_type: thuman2
+    use_no_sam_labels: false
+  21_lbs_transfer_swapped:
+    enabled: true
+    visualize: false
+  22_splatting_avatar_swapped:
+    enabled: true
+    user_A_iteration: 10000
+    model_B_iteration: 10000
+    num_workers: 4
+    bg_color: random
+    skip_existing: true
+  22b_swapped_head_donator_reposing:
+    disable_renders: true
+  22c_swapped_body_donator_reshaping:
+    enabled: true
+    enable_body_reshape: false
+  23_swap_back:
+    enabled: true
+    enable_body_reshape: false
+  24_render_swapped_back_gaussians:
+    enabled: true
+  27_render_body_full_gt_aligned:
+    enabled: true
+    use_cloth_fit_reshaped_gs: true
+    cloth_fit_suffix: _A1A2_semantic_height
+    use_label_no_sam: false
+    render_splits: train,test,val
+    render_original_body_donator: false
+    frame_id: 0
+  28_segment_swapped_renders:
+    resize_to: 512
+    use_label_no_sam: false
+  29_create_combined_portraits:
+    enabled: true
+    tolerance: 5
+    neck_selection_ratio: 0.333
+    lower_context_ratio: 0.5
+  30_create_validation_data_portraits:
+    enabled: false
+    tolerance: 5
+    neck_selection_ratio: 0.333
+    lower_context_ratio: 0.5
+    neck_dilation_ratio: 0.1
+    save_visualization_portraits: true
+    neck_modes:
+    - union
+    use_label_no_sam: false
+    skip_existing: false
+  31_refine_portrait_body_segmentation:
+    enabled: true
+    skip_missing_portraits: false
+  32_difix_refinement:
+    enabled: true
+    experiment: seamfix
+    ckpt_path: ${AVATARMIX_ASSET_ROOT}/seamfix.ckpt
+    refinement_mode: partial
+    run_both_directions: true
+    use_head_alignment: false
+    adjust_calibration: false
+    mask_source: standard
+    test_output_root: seamfixed_test_1024_B
+    fullbody_target_resolution:
+    - 1024
+    - 1024
+    fullbody_min_bbox_size: null
+    fullbody_target_resolution_order: wh
+    test_camera_filter: null
+    canonical_only: true
+    canonical_input_root: canonical_renders_full
+    canonical_test_output_root: seamfixed_canonical_full
+    extra_overrides: []
+  33_splatting_avatar_gs_finetune:
+    enabled: true
+    use_cloth_fit_reshaped_gs: true
+    cloth_fit_suffix: _A1A2_semantic_height
+    only_update_neck: false
+    skip_existing_masks: false
+    custom_rgb_relpath: body_fixed/difix_intermediates/refined_full.jpg
+    auto_generate_masks: true
+    rembg_model: u2net_human_seg
+    union_with_existing_mask: true
+    invert_mask: false
+    total_iteration: 10000
+    batch_size: 1
+    bg_color: black
+    num_workers: 4

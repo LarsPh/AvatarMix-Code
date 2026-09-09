@@ -1,0 +1,15 @@
+# @package _global_
+
+model:
+  _target_: lightning_diffusers.models.difix3d_module.DiFix3DModule
+  model_name: nvidia/difix
+  prompt: remove degradation
+  num_inference_steps: 1
+  timesteps:
+  - 199
+  guidance_scale: 0.0
+  trust_remote_code: true
+  torch_dtype: null
+  compile_model: false
+  enable_attention_slicing: false
+  enable_cpu_offload: false

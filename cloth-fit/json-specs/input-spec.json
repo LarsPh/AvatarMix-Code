@@ -1,0 +1,1293 @@
+[
+    {
+        "pointer": "/",
+        "type": "object",
+        "required": [
+            "avatar_mesh_path",
+            "garment_mesh_path",
+            "no_fit_spec_path",
+            "source_skeleton_path",
+            "target_skeleton_path",
+            "fit_weight",
+            "curve_center_target_weight"
+        ],
+        "optional": [
+            "units",
+            "common",
+            "root_path",
+            "contact",
+            "solver",
+            "output",
+            "is_skirt",
+            "voxel_size",
+            "incremental_steps",
+            "avatar_skin_weights_path",
+            "source_avatar_mesh_path",
+            "symmetry_weight",
+            "twist_penalty_weight",
+            "curvature_penalty_weight",
+            "similarity_penalty_weight",
+            "curve_size_weight",
+            "fit_weight_masks",
+            "curve_center_target_automatic_bone_generation",
+            "avatar_remove_indices_path",
+            "similarity_weight_masks",
+            "continuation_weight_masks",
+            "skeleton_prepass",
+            "normalization",
+            "step3_anneal",
+            "a2",
+            "fit_weight_vis",
+            "hem_boundary",
+            "ring_constraints"
+        ],
+        "doc": "Root of the configuration file."
+    },
+    {
+        "pointer": "/ring_constraints",
+        "type": "object",
+        "default": {},
+        "doc": "Optional multi-ring manual constraints. Backward-compatible extension of hem_boundary."
+    },
+    {
+        "pointer": "/ring_constraints/manual",
+        "type": "list",
+        "default": [],
+        "doc": "Manual ring constraint entries. Each item defines one vertex-id region and per-ring energies."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/name",
+        "type": "string",
+        "default": "",
+        "doc": "Short ring name for logging/debug filenames (e.g., hem, cuff_l, cuff_r, leg_l, leg_r, neck, upper_hem, lower_waist)."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/enabled",
+        "type": "bool",
+        "default": true,
+        "doc": "Enable this manual ring entry."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/vertex_ids_path",
+        "type": "file",
+        "default": "",
+        "doc": "Path to whitespace-separated ring vertex IDs for this entry."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/index_base",
+        "type": "int",
+        "default": 1,
+        "min": 0,
+        "max": 1,
+        "doc": "Index base for this ring file (1 or 0)."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/max_curves",
+        "type": "int",
+        "default": 1,
+        "min": 1,
+        "doc": "Maximum number of extracted loops to keep for this ring entry."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/dilate_steps",
+        "type": "int",
+        "default": -1,
+        "min": -1,
+        "doc": "If >=0, apply fixed manual dilation rings before extraction; if -1, use auto dilation."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/auto_dilate_max_steps",
+        "type": "int",
+        "default": 4,
+        "min": 0,
+        "doc": "Auto-dilation cap when dilate_steps is -1."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/select_mode",
+        "type": "string",
+        "default": "overlap",
+        "doc": "Loop selection mode: overlap or perimeter."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/accept_overlap",
+        "type": "float",
+        "default": 0.5,
+        "min": 0.0,
+        "max": 1.0,
+        "doc": "Acceptance threshold for loop overlap with original vertex set."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/accept_coverage",
+        "type": "float",
+        "default": 0.7,
+        "min": 0.0,
+        "max": 1.0,
+        "doc": "Acceptance threshold for boundary-vertex coverage."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/curvature_penalty_weight",
+        "type": "float",
+        "default": 0.0,
+        "min": 0.0,
+        "doc": "Per-ring curvature regularization weight on extracted loops."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/twist_penalty_weight",
+        "type": "float",
+        "default": 0.0,
+        "min": 0.0,
+        "doc": "Per-ring torsion/twist regularization weight on extracted loops."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/curve_center_target_weight",
+        "type": "float",
+        "default": -1.0,
+        "doc": "Optional per-ring center-target weight. If negative, uses global curve_center_target_weight."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/is_skirt",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, apply skirt middle-leg trick when creating this ring's center-target form."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/export_skeleton_debug",
+        "type": "bool",
+        "default": false,
+        "doc": "Export skeleton debug for this ring center-target form."
+    },
+    {
+        "pointer": "/ring_constraints/manual/*/skeleton_debug_prefix",
+        "type": "string",
+        "default": "",
+        "doc": "Optional filename prefix for this ring skeleton debug outputs."
+    },
+    {
+        "pointer": "/hem_boundary",
+        "type": "object",
+        "default": {},
+        "doc": "Optional hem-boundary-only curve-center target constraint driven by a manual vertex-id set."
+    },
+    {
+        "pointer": "/hem_boundary/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, identify hem boundary loop(s) by overlap with hem_boundary.vertex_ids_path and apply curve-center target constraint only to those loops."
+    },
+    {
+        "pointer": "/hem_boundary/vertex_ids_path",
+        "type": "file",
+        "default": "",
+        "doc": "Path to hem vertex IDs (whitespace-separated ints). Indices refer to garment mesh vertices."
+    },
+    {
+        "pointer": "/hem_boundary/index_base",
+        "type": "int",
+        "default": 1,
+        "min": 0,
+        "max": 1,
+        "doc": "Index base of the hem IDs file: 1 for 1-based, 0 for 0-based."
+    },
+    {
+        "pointer": "/hem_boundary/overlap_threshold",
+        "type": "float",
+        "default": 0.2,
+        "min": 0.0,
+        "max": 1.0,
+        "doc": "Minimum overlap score (|curve∩S|/|curve|) to accept a boundary loop as hem."
+    },
+    {
+        "pointer": "/hem_boundary/max_curves",
+        "type": "int",
+        "default": 1,
+        "min": 1,
+        "doc": "Maximum number of boundary loops to treat as hem (top-k by overlap)."
+    },
+    {
+        "pointer": "/hem_boundary/dilate_steps",
+        "type": "int",
+        "default": -1,
+        "min": -1,
+        "doc": "Manual control for region-loop extraction. If >= 0, apply exactly this many 1-ring vertex dilations to the input vertex-id set before extracting loops, and disable auto-dilation."
+    },
+    {
+        "pointer": "/hem_boundary/auto_dilate_max_steps",
+        "type": "int",
+        "default": 4,
+        "min": 0,
+        "doc": "Maximum number of 1-ring dilations to try when auto-dilation is enabled (i.e., dilate_steps < 0)."
+    },
+    {
+        "pointer": "/hem_boundary/select_mode",
+        "type": "string",
+        "default": "overlap",
+        "doc": "Loop selection mode. 'overlap' prefers loops that align with the original input set; 'perimeter' prefers the largest-perimeter loop (often yields a full loop even if slightly offset)."
+    },
+    {
+        "pointer": "/hem_boundary/accept_overlap",
+        "type": "float",
+        "default": 0.5,
+        "min": 0.0,
+        "max": 1.0,
+        "doc": "Acceptance threshold for overlap-mode: minimum fraction of loop vertices that must lie in the original input set to accept early."
+    },
+    {
+        "pointer": "/hem_boundary/accept_coverage",
+        "type": "float",
+        "default": 0.7,
+        "min": 0.0,
+        "max": 1.0,
+        "doc": "Acceptance threshold: minimum fraction of boundary vertices covered by the selected loop to accept early."
+    },
+    {
+        "pointer": "/hem_boundary/export_skeleton_debug",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, export debug skeleton joint/edge visualizations after skirt mid-leg insertion (when hem_boundary mode is active)."
+    },
+    {
+        "pointer": "/hem_boundary/skeleton_debug_prefix",
+        "type": "string",
+        "default": "hem_boundary_skeleton",
+        "doc": "Filename prefix (under output folder) for hem-boundary skeleton debug exports."
+    },
+    {
+        "pointer": "/hem_boundary/curvature_penalty_weight",
+        "type": "float",
+        "default": 0.0,
+        "min": 0.0,
+        "doc": "Optional hem-only curve curvature regularization on the extracted hem loop(s). Works on arbitrary closed loops (not required to be a topological boundary)."
+    },
+    {
+        "pointer": "/hem_boundary/twist_penalty_weight",
+        "type": "float",
+        "default": 0.0,
+        "min": 0.0,
+        "doc": "Optional hem-only curve torsion/twist regularization on the extracted hem loop(s). Works on arbitrary closed loops (not required to be a topological boundary)."
+    },
+    {
+        "pointer": "/fit_weight_vis",
+        "type": "object",
+        "default": {},
+        "doc": "Optional PLY exports for per-vertex fit-weight multipliers (garment only)."
+    },
+    {
+        "pointer": "/fit_weight_vis/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "Enable exporting fit-weight multiplier visualizations as colored PLY meshes."
+    },
+    {
+        "pointer": "/fit_weight_vis/export_mask_only",
+        "type": "bool",
+        "default": true,
+        "doc": "If true, export mask-only per-vertex multipliers (from fit_weight_masks only; before A2)."
+    },
+    {
+        "pointer": "/fit_weight_vis/export_final",
+        "type": "bool",
+        "default": true,
+        "doc": "If true, export final per-vertex multipliers (mask-only times A2, matching Step3 last substep)."
+    },
+    {
+        "pointer": "/fit_weight_vis/mask_only_filename",
+        "type": "string",
+        "default": "fit_weight_vertex_masks_only.ply",
+        "doc": "Filename (under output folder) for mask-only visualization."
+    },
+    {
+        "pointer": "/fit_weight_vis/final_filename",
+        "type": "string",
+        "default": "fit_weight_vertex_masks_times_area.ply",
+        "doc": "Filename (under output folder) for final visualization."
+    },
+    {
+        "pointer": "/a2",
+        "type": "object",
+        "default": {},
+        "doc": "Optional A2 area-aware fit-weight multipliers (Step3 only, typically final substep only)."
+    },
+    {
+        "pointer": "/a2/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "Enable A2 area-aware fit-weight multipliers."
+    },
+    {
+        "pointer": "/a2/source_body_trim_path",
+        "type": "file",
+        "default": "",
+        "doc": "Path to SOURCE trimmed body mesh (triangulated). Used to compute per-face A_s."
+    },
+    {
+        "pointer": "/a2/target_body_trim_path",
+        "type": "file",
+        "default": "",
+        "doc": "Path to TARGET trimmed body mesh (triangulated, aligned to source pose/space). Used to compute per-face A_t. Must share identical face ordering with source_body_trim_path."
+    },
+    {
+        "pointer": "/a2/correspondence_path",
+        "type": "file",
+        "default": "",
+        "doc": "Garment vertex -> source body triangle correspondence file. One line per garment vertex: tri_id [dist] [b0 b1 b2]."
+    },
+    {
+        "pointer": "/a2/lambda",
+        "type": "float",
+        "default": 6.0,
+        "min": 0.0,
+        "doc": "Boost strength: w = clamp(1 + lambda*max(0,1-rho), 1, w_max)."
+    },
+    {
+        "pointer": "/a2/w_max",
+        "type": "float",
+        "default": 4.0,
+        "min": 1.0,
+        "doc": "Maximum A2 per-vertex weight multiplier."
+    },
+    {
+        "pointer": "/a2/d_gate",
+        "type": "float",
+        "default": 0.05,
+        "min": 0.0,
+        "doc": "Distance gating threshold (same units as meshes). If dist is provided and dist>d_gate, disable boost (w=1)."
+    },
+    {
+        "pointer": "/a2/use_distance_gate",
+        "type": "bool",
+        "default": true,
+        "doc": "If true and dist is present in the correspondence file, apply distance gating."
+    },
+    {
+        "pointer": "/a2/final_substep_only",
+        "type": "bool",
+        "default": true,
+        "doc": "If true, apply A2 only on the final substep (alpha=1)."
+    },
+    {
+        "pointer": "/a2/export_visualization",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, export colored PLY visualizations for A2 (trimmed body area-change and garment per-vertex multipliers)."
+    },
+    {
+        "pointer": "/a2/enable_surf_relax",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, apply A2-based local relaxation to the SimilarityForm (surface similarity) term during Step3 only."
+    },
+    {
+        "pointer": "/a2/surf_k",
+        "type": "float",
+        "default": 0.8,
+        "min": 0.0,
+        "doc": "Surface similarity relaxation strength: a2_surf = clamp(1 - surf_k*shrink, surf_min, 1)."
+    },
+    {
+        "pointer": "/a2/surf_min",
+        "type": "float",
+        "default": 0.7,
+        "min": 0.0,
+        "max": 1.0,
+        "doc": "Lower bound for local surface similarity multiplier a2_surf."
+    },
+    {
+        "pointer": "/source_avatar_mesh_path",
+        "default": "",
+        "type": "file",
+        "doc": "Optional path to the source SMPL-X body mesh (same units and axes as avatar_mesh_path). Used by A1/A2 to measure shrink severity and build local maps."
+    },
+    {
+        "pointer": "/step3_anneal",
+        "type": "object",
+        "default": {},
+        "doc": "Optional A1 Step3 annealing schedule (applies only to the final substep’s Step3 solve)."
+    },
+    {
+        "pointer": "/step3_anneal/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "Enable A1 annealing schedule in Step3 (final substep only)."
+    },
+    {
+        "pointer": "/step3_anneal/r0",
+        "type": "float",
+        "default": 0.2,
+        "min": 1e-12,
+        "doc": "Shrink saturation parameter r0 (volume shrink fraction where h reaches 1)."
+    },
+    {
+        "pointer": "/step3_anneal/a",
+        "type": "float",
+        "default": 4.0,
+        "min": 0.0,
+        "doc": "Phase 1 (TIGHTEN) fit_weight multiplier: fit_weight = base*(1 + a*h)."
+    },
+    {
+        "pointer": "/step3_anneal/s1",
+        "type": "float",
+        "default": 0.3,
+        "min": 0.0,
+        "doc": "Phase 1 (TIGHTEN) similarity multiplier: similarity = base*s1."
+    },
+    {
+        "pointer": "/step3_anneal/a2",
+        "type": "float",
+        "default": 0.4,
+        "min": 0.0,
+        "doc": "Phase 2 (RESTORE) fit_weight multiplier: fit_weight = base*(1 + a2*h)."
+    },
+    {
+        "pointer": "/step3_anneal/percentile",
+        "type": "float",
+        "default": 0.9,
+        "min": 0.0,
+        "max": 1.0,
+        "doc": "Percentile q for the fit gap statistic (e.g., 0.9 for P90)."
+    },
+    {
+        "pointer": "/step3_anneal/tau",
+        "type": "float",
+        "default": 0.008,
+        "min": 0.0,
+        "doc": "Switch-to-restore threshold on the gap percentile (in length units)."
+    },
+    {
+        "pointer": "/step3_anneal/d0",
+        "type": "float",
+        "default": 0.0,
+        "doc": "Gap definition offset: D = max(0, phi - d0)."
+    },
+    {
+        "pointer": "/step3_anneal/check_every",
+        "type": "int",
+        "default": 10,
+        "min": 1,
+        "doc": "Check P90/stall every N nonlinear iterations during Step3."
+    },
+    {
+        "pointer": "/step3_anneal/stall_eps",
+        "type": "float",
+        "default": 0.01,
+        "min": 0.0,
+        "doc": "Stall criterion epsilon: relative P90 improvement < eps counts as stall."
+    },
+    {
+        "pointer": "/step3_anneal/stall_K",
+        "type": "int",
+        "default": 8,
+        "min": 1,
+        "doc": "Switch-to-restore after K consecutive stalled checks."
+    },
+    {
+        "pointer": "/normalization",
+        "type": "object",
+        "default": {},
+        "doc": "Optional normalization controls. Default preserves legacy behavior."
+    },
+    {
+        "pointer": "/normalization/mode",
+        "type": "string",
+        "default": "current",
+        "choices": ["current", "shared_translation_no_scale", "separate_translation_no_scale", "separate_translation_with_subject_scale", "none"],
+        "doc": "Normalization mode. 'current' matches legacy behavior (scale + per-side translation). 'shared_translation_no_scale' subtracts a single translation from all meshes/skeletons without scaling. 'separate_translation_no_scale' centers source (skeleton+garment) and target (avatar+target skeleton) independently without scaling. 'separate_translation_with_subject_scale' also cancels per-side subject scale during optimization: centered source/target are divided by (source_scale, target_scale), then outputs are restored back to their original world scale. 'none' disables normalization."
+    },
+    {
+        "pointer": "/normalization/source_scale_path",
+        "type": "string",
+        "default": "",
+        "doc": "For normalization.mode='separate_translation_with_subject_scale': path to a JSON file describing the source/garment subject scale. Supported formats: {\"scale\": s} or {\"inv_scale\": 1/s} or SwapVTON's smpl_scale_inv.json (contains both)."
+    },
+    {
+        "pointer": "/normalization/target_scale_path",
+        "type": "string",
+        "default": "",
+        "doc": "For normalization.mode='separate_translation_with_subject_scale': path to a JSON file describing the target/avatar subject scale. Supported formats: {\"scale\": s} or {\"inv_scale\": 1/s} or SwapVTON's smpl_scale_inv.json."
+    },
+    {
+        "pointer": "/normalization/restore_output_translation",
+        "type": "bool",
+        "default": false,
+        "doc": "If true and mode is 'shared_translation_no_scale' or 'separate_translation_no_scale', add the (target) translation back when writing output meshes (internal solver coordinates remain shifted)."
+    },
+    {
+        "pointer": "/normalization/save_offsets",
+        "type": "bool",
+        "default": false,
+        "doc": "If true (and mode is a no-scale translation mode), write a JSON file with the exact source/target translation offsets used for mapping input <-> optimization space."
+    },
+    {
+        "pointer": "/normalization/save_offsets_path",
+        "type": "string",
+        "default": "",
+        "doc": "Optional path for the normalization offsets JSON. If empty, defaults to <output>/normalization_offsets.json."
+    },
+    {
+        "pointer": "/normalization/scale_guard",
+        "type": "object",
+        "default": {},
+        "doc": "Optional A0 scale/units safeguard for height-aware modes. Only applies when normalization.mode is 'shared_translation_no_scale' or 'separate_translation_no_scale'."
+    },
+    {
+        "pointer": "/normalization/scale_guard/enabled",
+        "type": "bool",
+        "default": true,
+        "doc": "Enable A0 scale/units safeguard (new normalization modes only)."
+    },
+    {
+        "pointer": "/normalization/scale_guard/canonical",
+        "type": "float",
+        "default": 1.65,
+        "min": 0.1,
+        "doc": "Canonical size target in meters for the shorter skeleton (size proxy)."
+    },
+    {
+        "pointer": "/normalization/scale_guard/range_min",
+        "type": "float",
+        "default": 1.3,
+        "min": 0.0,
+        "doc": "Lower bound of normal size proxy range (max bbox extent of skeleton)."
+    },
+    {
+        "pointer": "/normalization/scale_guard/range_max",
+        "type": "float",
+        "default": 2.8,
+        "min": 0.0,
+        "doc": "Upper bound of normal size proxy range (max bbox extent of skeleton)."
+    },
+    {
+        "pointer": "/normalization/scale_guard/max_ratio",
+        "type": "float",
+        "default": 1.35,
+        "min": 1.0,
+        "doc": "Error if max(h_src,h_tgt)/min(h_src,h_tgt) exceeds this ratio (relative scale mismatch too large)."
+    },
+    {
+        "pointer": "/normalization/scale_guard/apply_when",
+        "type": "string",
+        "default": "both_outside",
+        "choices": ["both_outside"],
+        "doc": "When to apply the common rescale-to-canonical. Currently supported: 'both_outside' (only if both sizes are outside [range_min, range_max])."
+    },
+    {
+        "pointer": "/normalization/scale_guard/error_on_ratio_exceed",
+        "type": "bool",
+        "default": true,
+        "doc": "If true, throw when relative scale mismatch exceeds max_ratio; if false, only warn."
+    },
+    {
+        "pointer": "/incremental_steps",
+        "default": 1,
+        "type": "int",
+        "min": 1,
+        "doc": "If this value is larger than 1, instead of directly optimizing towards the target avatar directly, the optimization is divided into a number of substeps to gradually optimize towards the target. Larger values may be useful when the target avatar is very different from the original avatar."
+    },
+    {
+        "pointer": "/is_skirt",
+        "type": "bool",
+        "default": false,
+        "doc": "Set this value to true if the garment is a skirt. This option will insert an extra skeleton bone in the middle of two legs, which helps to enforce the positional constraint on the hemline of the skirt."
+    },
+    {
+        "pointer": "/voxel_size",
+        "type": "float",
+        "default": 0.01,
+        "doc": "The voxel size of the signed distance field representing the target avatar. The avatars are scaled to unit size."
+    },
+    {
+        "pointer": "/avatar_skin_weights_path",
+        "default": "",
+        "type": "file",
+        "doc": "The path to the file that stores the skinning weights of the target avatar. The skinning weights should be a matrix of size #number_of_skeleton_nodes times #number_of_vertices. The skinning weights will be used to project the target avatar to its skeleton. If this file is not provided, the vertices will be simply projected to the closest bone in distance."
+    },
+    {
+        "pointer": "/avatar_mesh_path",
+        "type": "file",
+        "extensions": [
+            ".obj"
+        ],
+        "doc": "The path to the target avatar mesh. The target avatar mesh should be one or multiple closed surfaces, so that it can be converted to a signed distance field by OpenVDB."
+    },
+    {
+        "pointer": "/garment_mesh_path",
+        "type": "file",
+        "extensions": [
+            ".obj"
+        ],
+        "doc": "The path to the source garment mesh. The garment mesh should be a connected manifold triangular mesh."
+    },
+    {
+        "pointer": "/no_fit_spec_path",
+        "type": "file",
+        "extensions": [
+            ".obj"
+        ],
+        "doc": "The path to a text file with a list of vertex IDs indicating the faces on the source garment mesh that should not fit tightly to the avatar."
+    },
+    {
+        "pointer": "/source_skeleton_path",
+        "type": "file",
+        "extensions": [
+            ".obj"
+        ],
+        "doc": "The path to the skeleton mesh of the source avatar. The skeleton connectivity should be exactly the same for the source and target avatars."
+    },
+    {
+        "pointer": "/target_skeleton_path",
+        "type": "file",
+        "extensions": [
+            ".obj"
+        ],
+        "doc": "The path to the skeleton mesh of the target avatar. The skeleton connectivity should be exactly the same for the source and target avatars."
+    },
+    {
+        "pointer": "/fit_weight",
+        "type": "float",
+        "min": 0,
+        "doc": "The weight controlling how tight does the garment fit on the avatar."
+    },
+    {
+        "pointer": "/curve_center_target_weight",
+        "type": "float",
+        "min": 0,
+        "doc": "The weight of enforcing the positional constraints on curve loops, e.g. hem, collar, cuff."
+    },
+    {
+        "pointer": "/symmetry_weight",
+        "type": "float",
+        "default": 0,
+        "min": 0,
+        "doc": "The weight of enforcing symmetry on originally symmetric garment curve loops, e.g. collar."
+    },
+    {
+        "pointer": "/twist_penalty_weight",
+        "type": "float",
+        "min": 0,
+        "default": 0,
+        "doc": "The weight of preserving torsion on the curve loops."
+    },
+    {
+        "pointer": "/curvature_penalty_weight",
+        "type": "float",
+        "min": 0,
+        "default": 0,
+        "doc": "The weight of preserving curvature on the curve loops."
+    },
+    {
+        "pointer": "/similarity_penalty_weight",
+        "type": "float",
+        "default": 1,
+        "min": 0,
+        "doc": "The weight of preserving surface geometry."
+    },
+    {
+        "pointer": "/fit_weight_masks",
+        "type": "list",
+        "default": [],
+        "doc": "List of per-vertex mask entries with multipliers applied to the fit term on garment vertices."
+    },
+    {
+        "pointer": "/fit_weight_masks/*/indices",
+        "type": "list",
+        "doc": "Inline 0-based garment vertex indices. Use instead of indices_path."
+    },
+    {
+        "pointer": "/fit_weight_masks/*/indices/*",
+        "type": "int"
+    },
+    {
+        "pointer": "/fit_weight_masks/*/indices_path",
+        "type": "file",
+        "doc": "Optional text file (whitespace or line separated) of garment vertex indices."
+    },
+    {
+        "pointer": "/fit_weight_masks/*/multiplier",
+        "type": "float",
+        "min": 0,
+        "doc": "Per-vertex multiplier applied on top of global fit_weight. 0 disables; 1 default; >1 tighter."
+    },
+    {
+        "pointer": "/curve_size_weight",
+        "type": "float",
+        "default": 0,
+        "min": 0,
+        "doc": "The weight of penalizing the curve loop size, for cases like the collar being much wider than the neck."
+    },
+    {
+        "pointer": "/common",
+        "default": "",
+        "type": "file",
+        "extensions": [
+            ".json"
+        ],
+        "doc": "Path to common settings will patch the current file."
+    },
+    {
+        "pointer": "/root_path",
+        "default": "",
+        "type": "string",
+        "doc": "Path for all relative paths, set automatically to the folder containing this JSON."
+    },
+    {
+        "pointer": "/units",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "length",
+            "mass",
+            "time",
+            "characteristic_length"
+        ],
+        "doc": "Basic units used in the code."
+    },
+    {
+        "pointer": "/units/length",
+        "default": "m",
+        "type": "string",
+        "doc": "Length unit."
+    },
+    {
+        "pointer": "/units/mass",
+        "default": "kg",
+        "type": "string",
+        "doc": "Mass unit."
+    },
+    {
+        "pointer": "/units/time",
+        "default": "s",
+        "type": "string",
+        "doc": "Time unit."
+    },
+    {
+        "pointer": "/units/characteristic_length",
+        "default": 1,
+        "type": "float",
+        "doc": "Characteristic length, used for tolerances."
+    },
+    {
+        "pointer": "/tests",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "err_h1",
+            "err_h1_semi",
+            "err_l2",
+            "err_linf",
+            "err_linf_grad",
+            "err_lp",
+            "margin",
+            "time_steps"
+        ],
+        "doc": "Used to test to compare different norms of solutions."
+    },
+    {
+        "pointer": "/contact",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "enabled",
+            "dhat"
+        ],
+        "doc": "Contact handling parameters."
+    },
+    {
+        "pointer": "/contact/enabled",
+        "default": false,
+        "type": "bool",
+        "doc": "True if contact handling is enabled."
+    },
+    {
+        "pointer": "/contact/dhat",
+        "default": 0.002,
+        "min": 0,
+        "type": "float",
+        "doc": "Contact barrier activation distance."
+    },
+    {
+        "pointer": "/solver",
+        "type": "include",
+        "spec_file": "polysolve.json",
+        "doc": "Settings for the solver."
+    },
+    {
+        "pointer": "/solver",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "max_threads",
+            "linear",
+            "nonlinear",
+            "augmented_lagrangian",
+            "contact",
+            "parallel_similarity_hessian",
+            "similarity_hessian_mode",
+            "similarity_hessian_use_dx_map",
+            "similarity_hessian_reserve_triplets",
+            "similarity_unique_adjacency"
+        ],
+        "doc": "The settings for the solver including linear solver, nonlinear solver, and some advanced options."
+    },
+    {
+        "pointer": "/solver/parallel_similarity_hessian",
+        "default": true,
+        "type": "bool",
+        "doc": "If true, assemble the SimilarityForm Hessian using maybe_parallel_for (thread-local triplets). Set false to run only this Hessian assembly serially for A/B performance testing."
+    },
+    {
+        "pointer": "/solver/similarity_hessian_mode",
+        "default": "optimized",
+        "type": "string",
+        "choices": ["optimized", "optimized_serial", "legacy"],
+        "doc": "Similarity Hessian assembly mode. optimized: parallel + dx-map + reserve. optimized_serial: serial but uses dx-map + reserve. legacy: match original behavior closely (serial, allocate V, no reserve)."
+    },
+    {
+        "pointer": "/solver/similarity_hessian_use_dx_map",
+        "default": true,
+        "type": "bool",
+        "doc": "If true, avoid allocating V=unflatten(x)+V_ by using an Eigen::Map of the displacement vector (Similarity Hessian only)."
+    },
+    {
+        "pointer": "/solver/similarity_hessian_reserve_triplets",
+        "default": true,
+        "type": "bool",
+        "doc": "If true, reserve triplet capacity based on the internal adjacency count to reduce allocator overhead (Similarity Hessian only)."
+    },
+    {
+        "pointer": "/solver/similarity_unique_adjacency",
+        "default": false,
+        "type": "bool",
+        "doc": "If true, process each interior triangle-triangle adjacency once (unique undirected edges) for SimilarityForm value/gradient/Hessian, removing the internal 1/2 compensation. Can reduce similarity gradient/Hessian work by ~2× on manifold meshes."
+    },
+    {
+        "pointer": "/solver/max_threads",
+        "default": 16,
+        "type": "int",
+        "min": 0,
+        "doc": "Maximum number of threads used; 0 is unlimited."
+    },
+    {
+        "pointer": "/solver/augmented_lagrangian",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "initial_weight",
+            "scaling",
+            "max_weight",
+            "max_outer_steps",
+            "eta",
+            "error_threshold",
+            "nonlinear"
+        ],
+        "doc": "Parameters for the AL for imposing Dirichlet BCs. If the bc are not imposable, we add $w\\|u - bc\\|^2$ to the energy ($u$ is the solution at the Dirichlet nodes and $bc$ are the Dirichlet values). After convergence, we try to impose bc again. The algorithm computes E + a/2*AL^2 - lambda AL, where E is the current energy (elastic, inertia, contact, etc.) and AL is the augmented Lagrangian energy. a starts at `initial_weight` and, in case DBC cannot be imposed, we update a as `a *= scaling` until `max_weight`. See IPC additional material"
+    },
+    {
+        "pointer": "/solver/augmented_lagrangian/max_outer_steps",
+        "default": 0,
+        "type": "int",
+        "min": 0,
+        "doc": "Maximum number of AL outer steps (i.e., number of times the AL nonlinear sub-solve can be invoked). 0 means unlimited."
+    },
+    {
+        "pointer": "/solver/augmented_lagrangian/nonlinear",
+        "type": "include",
+        "spec_file": "nonlinear-solver-spec.json",
+        "doc": "Settings for nonlinear solver in augmented lagrangian."
+    },
+    {
+        "pointer": "/solver/augmented_lagrangian/initial_weight",
+        "default": 1e6,
+        "min": 0,
+        "type": "float",
+        "doc": "Initial weight for AL"
+    },
+    {
+        "pointer": "/solver/augmented_lagrangian/error",
+        "default": 1e-2,
+        "min": 0,
+        "type": "float",
+        "doc": "Don't stop AL unless the error is smaller than this number."
+    },
+    {
+        "pointer": "/solver/augmented_lagrangian/scaling",
+        "default": 2.0,
+        "type": "float",
+        "doc": "Multiplication factor"
+    },
+    {
+        "pointer": "/solver/augmented_lagrangian/max_weight",
+        "default": 1e8,
+        "type": "float",
+        "doc": "Maximum weight"
+    },
+    {
+        "pointer": "/solver/augmented_lagrangian/eta",
+        "default": 0.99,
+        "min": 0,
+        "max": 1,
+        "type": "float",
+        "doc": "Tolerance for increasing the weight or updating the lagrangian"
+    },
+    {
+        "pointer": "/solver/augmented_lagrangian/error_threshold",
+        "default": 1e-2,
+        "min": 0,
+        "type": "float",
+        "doc": "Error tolerance for enforcing the constraints directly"
+    },
+    {
+        "pointer": "/solver/contact",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "CCD",
+            "barrier_stiffness"
+        ],
+        "doc": "Settings for contact handling in the solver."
+    },
+    {
+        "pointer": "/solver/contact/CCD",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "broad_phase",
+            "tolerance",
+            "max_iterations"
+        ],
+        "doc": "CCD options"
+    },
+    {
+        "pointer": "/solver/contact/CCD/broad_phase",
+        "default": "hash_grid",
+        "type": "string",
+        "options": [
+            "hash_grid",
+            "HG",
+            "brute_force",
+            "BF",
+            "spatial_hash",
+            "SH",
+            "bvh",
+            "BVH",
+            "sweep_and_prune",
+            "SAP",
+            "sweep_and_tiniest_queue",
+            "STQ"
+        ],
+        "doc": "Broad phase collision-detection algorithm to use"
+    },
+    {
+        "pointer": "/solver/contact/CCD/tolerance",
+        "default": 1e-06,
+        "type": "float",
+        "doc": "CCD tolerance"
+    },
+    {
+        "pointer": "/solver/contact/CCD/max_iterations",
+        "default": 1000000,
+        "type": "int",
+        "doc": "Maximum number of iterations for continuous collision detection"
+    },
+    {
+        "pointer": "/solver/contact/barrier_stiffness",
+        "default": 1e8,
+        "type": "float",
+        "doc": "The coefficient of clamped log-barrier function value when not adaptive"
+    },
+    {
+        "pointer": "/output",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "directory",
+            "log",
+            "tensorboard",
+            "profiling",
+            "progress",
+            "skip_frame"
+        ],
+        "doc": "output settings"
+    },
+    {
+        "pointer": "/output/progress",
+        "type": "object",
+        "default": {},
+        "doc": "Optional debug progress logging (substep/phase/iteration)."
+    },
+    {
+        "pointer": "/output/progress/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, print progress lines at debug level during nonlinear iterations."
+    },
+    {
+        "pointer": "/output/progress/log_every",
+        "type": "int",
+        "default": 10,
+        "min": 1,
+        "doc": "Log a progress line every N nonlinear iterations (post_step callbacks)."
+    },
+    {
+        "pointer": "/output/directory",
+        "default": ".",
+        "type": "string",
+        "doc": "Directory for output files."
+    },
+    {
+        "pointer": "/output/log",
+        "spec_file": "log.json",
+        "type": "include",
+        "doc": "Setting for the output log."
+    },
+    {
+        "pointer": "/output/tensorboard",
+        "type": "object",
+        "default": {},
+        "doc": "Optional TensorBoard scalar logging (native event files)."
+    },
+    {
+        "pointer": "/output/tensorboard/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "Enable TensorBoard scalar logging."
+    },
+    {
+        "pointer": "/output/tensorboard/log_dir",
+        "type": "string",
+        "default": "",
+        "doc": "Optional TensorBoard log directory. If empty, defaults to <output>/tb."
+    },
+    {
+        "pointer": "/output/tensorboard/log_every",
+        "type": "int",
+        "default": 10,
+        "min": 1,
+        "doc": "Log scalars every N nonlinear iterations (post_step calls)."
+    },
+    {
+        "pointer": "/output/tensorboard/energy_every",
+        "type": "int",
+        "default": 50,
+        "min": 1,
+        "doc": "Compute and log energy every N steps (can be expensive)."
+    },
+    {
+        "pointer": "/output/tensorboard/detailed_energies",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, also log per-form weighted energy terms (enabled forms with non-zero weight)."
+    },
+    {
+        "pointer": "/output/tensorboard/flush_period_s",
+        "type": "int",
+        "default": 3,
+        "min": 1,
+        "doc": "Background flush period in seconds for the TensorBoard writer."
+    },
+    {
+        "pointer": "/output/tensorboard/max_queue_size",
+        "type": "int",
+        "default": 100000,
+        "min": 1,
+        "doc": "Max queued events before forcing a flush."
+    },
+    {
+        "pointer": "/output/tensorboard/resume",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, append to an existing event file if present."
+    },
+    {
+        "pointer": "/output/profiling",
+        "type": "object",
+        "default": {},
+        "doc": "Optional profiling outputs (Chrome trace and timing summaries)."
+    },
+    {
+        "pointer": "/output/profiling/chrome_trace",
+        "type": "object",
+        "default": {},
+        "doc": "Chrome trace timeline output. View with chrome://tracing."
+    },
+    {
+        "pointer": "/output/profiling/chrome_trace/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "Enable Chrome trace output."
+    },
+    {
+        "pointer": "/output/profiling/chrome_trace/path",
+        "type": "string",
+        "default": "",
+        "doc": "Optional path for trace.json. If empty, defaults to <output>/trace.json."
+    },
+    {
+        "pointer": "/output/profiling/timing_summary",
+        "type": "object",
+        "default": {},
+        "doc": "Aggregated timing summary from POLYFEM_SCOPED_TIMER scopes."
+    },
+    {
+        "pointer": "/output/profiling/timing_summary/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "Enable aggregated timing summary (printed at end of run)."
+    },
+    {
+        "pointer": "/output/skip_frame",
+        "default": 1,
+        "type": "int",
+        "doc": "export every skip_frame-th frames for time dependent simulations"
+    },
+    {
+        "pointer": "/curve_center_target_automatic_bone_generation",
+        "type": "bool",
+        "default": false,
+        "doc": "Set this value to true if the bone used by curve center target is automatically generated if more than 1 bone intersects with the plane fit to the curve loops (hem, collar, cuff, etc.)"
+    },
+    {
+        "pointer": "/avatar_remove_indices_path",
+        "type": "file",
+        "default": "",
+        "doc": "Optional text file of avatar vertex indices to remove (0-based), one per line or whitespace-separated. Removal occurs before normalization/projection; skin weights are sliced accordingly."
+    },
+    {
+        "pointer": "/similarity_weight_masks",
+        "type": "list",
+        "default": [],
+        "doc": "Per-vertex multipliers for SimilarityForm over collision vertices. If mesh=garment, garment indices are auto-offset by n_avatar_verts."
+    },
+    {
+        "pointer": "/similarity_weight_masks/*/indices",
+        "type": "list",
+        "doc": "Inline 0-based vertex indices. Interpreted per mesh field (garment/avatar/collision)."
+    },
+    {
+        "pointer": "/similarity_weight_masks/*/indices/*",
+        "type": "int"
+    },
+    {
+        "pointer": "/similarity_weight_masks/*/indices_path",
+        "type": "file",
+        "doc": "Optional text file of indices."
+    },
+    {
+        "pointer": "/similarity_weight_masks/*/multiplier",
+        "type": "float",
+        "min": 0,
+        "doc": "Multiplier applied to SimilarityForm contributions at the specified vertices."
+    },
+    {
+        "pointer": "/similarity_weight_masks/*/mesh",
+        "type": "string",
+        "default": "",
+        "doc": "Index space: 'garment', 'avatar', or 'collision'. If omitted, garment indices are auto-detected and offset to collision space."
+    },
+    {
+        "pointer": "/continuation_weight_masks",
+        "type": "list",
+        "default": [],
+        "doc": "Per-vertex multipliers for continuation (PointPenalty/Lagrangian target) over avatar vertices. If mesh=garment, indices are mapped to nearest avatar verts."
+    },
+    {
+        "pointer": "/continuation_weight_masks/*/indices",
+        "type": "list",
+        "doc": "Inline 0-based vertex indices. Interpreted per mesh field (garment/avatar)."
+    },
+    {
+        "pointer": "/continuation_weight_masks/*/indices/*",
+        "type": "int"
+    },
+    {
+        "pointer": "/continuation_weight_masks/*/indices_path",
+        "type": "file",
+        "doc": "Optional text file of indices."
+    },
+    {
+        "pointer": "/continuation_weight_masks/*/multiplier",
+        "type": "float",
+        "min": 0,
+        "doc": "Multiplier (0 disables, 1 default) applied to the continuation displacement at specified avatar vertices."
+    },
+    {
+        "pointer": "/continuation_weight_masks/*/mesh",
+        "type": "string",
+        "default": "avatar",
+        "doc": "Index space: 'avatar' or 'garment'. If 'garment', indices are mapped to nearest avatar vertices."
+    },
+    {
+        "pointer": "/skeleton_prepass",
+        "type": "object",
+        "default": null,
+        "optional": [
+            "enable",
+            "voxel_size",
+            "samples_per_bone",
+            "inside_margin",
+            "inside_weight",
+            "length_weight",
+            "anchor_weight",
+            "root_vertex",
+            "flood_fill_sign",
+            "close_holes_voxels",
+            "cap_open_boundaries"
+        ],
+        "doc": "Parameters for source skeleton pre-pass SDF inside optimization."
+    },
+    {
+        "pointer": "/skeleton_prepass/enable",
+        "type": "bool",
+        "default": false
+    },
+    {
+        "pointer": "/skeleton_prepass/voxel_size",
+        "type": "float",
+        "default": 0.005
+    },
+    {
+        "pointer": "/skeleton_prepass/samples_per_bone",
+        "type": "int",
+        "default": 7,
+        "min": 2
+    },
+    {
+        "pointer": "/skeleton_prepass/inside_margin",
+        "type": "float",
+        "default": 0.0
+    },
+    {
+        "pointer": "/skeleton_prepass/inside_weight",
+        "type": "float",
+        "default": 1.0
+    },
+    {
+        "pointer": "/skeleton_prepass/length_weight",
+        "type": "float",
+        "default": 10.0
+    },
+    {
+        "pointer": "/skeleton_prepass/anchor_weight",
+        "type": "float",
+        "default": 50.0
+    },
+    {
+        "pointer": "/skeleton_prepass/root_vertex",
+        "type": "int",
+        "default": 0
+    },
+    {
+        "pointer": "/skeleton_prepass/flood_fill_sign",
+        "type": "bool",
+        "default": true
+    },
+    {
+        "pointer": "/skeleton_prepass/close_holes_voxels",
+        "type": "int",
+        "default": 0,
+        "min": 0
+    },
+    {
+        "pointer": "/skeleton_prepass/cap_open_boundaries",
+        "type": "bool",
+        "default": false
+    }
+]

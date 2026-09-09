@@ -1,0 +1,11 @@
+[project]
+name = "lbs_transfer"
+version = "0.1.0"
+description = "Robust Skin Weights Transfer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy==1.26.4",
+    "libigl==2.5.1",
+    "polyscope",
+]

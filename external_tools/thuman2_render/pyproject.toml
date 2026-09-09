@@ -1,0 +1,24 @@
+[project]
+name = "avatarmix-thuman-renderer"
+version = "0.1.0"
+description = "THuman multi-view rendering for AvatarMix"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+  "numpy<2", "opencv-python<4.12", "trimesh", "PyOpenGL", "PyOpenGL-accelerate",
+  "tqdm", "numba", "pillow", "scipy", "torch==2.4.1", "torchvision==0.19.1",
+  "pytorch3d", "termcolor", "tinyobjloader==2.0.0rc13", "matplotlib", "scikit-learn",
+  "setuptools<81",
+]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu124" }]
+torchvision = [{ index = "pytorch-cu124" }]
+pytorch3d = { git = "https://github.com/facebookresearch/pytorch3d.git", rev = "cbcae096a0b9b04f7c515d11bb4285a82e96b8d7" }
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[tool.uv]
+no-build-isolation-package = ["pytorch3d"]

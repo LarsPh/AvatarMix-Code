@@ -1,0 +1,58 @@
+# In order to persistently set default options for your project, copy this file
+# and remove the '.sample' suffix. Then uncomment the relevant options for your
+# project. Note that this file is included before `project(PolyFEM)` is defined,
+# so we can use it to define the C and C++ compilers, but some variables such as
+# PROJECT_SOURCE_DIR will not be defined yet. You can use CMAKE_SOURCE_DIR instead.
+
+################################################################################
+# CMake Options
+################################################################################
+
+# Specify a custom install prefix path
+# set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install CACHE STRING "Install directory used by install().")
+
+# Generates a `compile_commands.json` that can be used for autocompletion
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Enable/Disable output of compile commands during generation.")
+
+# Use ccache to speed up compilation of repeated builds
+# find_program(CCACHE_PROGRAM ccache)
+# if(CCACHE_PROGRAM)
+#     message(STATUS "Enabling Ccache support")
+#     set(CMAKE_C_COMPILER_LAUNCHER   ${CCACHE_PROGRAM} CACHE STRING "")
+#     set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM} CACHE STRING "")
+# endif()
+
+# Use a specific C/C++ compiler, e.g. llvm-clang on macOS (so we can use clangd)
+# set(CMAKE_C_COMPILER   "/usr/local/opt/llvm/bin/clang"   CACHE STRING "C compiler")
+# set(CMAKE_CXX_COMPILER "/usr/local/opt/llvm/bin/clang++" CACHE STRING "C++ compiler")
+
+# Set deployment platform for macOS
+# set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12 CACHE STRING "macOS deployment target")
+
+# Always add colored output (e.g. when using Ninja)
+# list(APPEND CMAKE_CXX_FLAGS -fdiagnostics-color=always) # GCC
+# list(APPEND CMAKE_CXX_FLAGS -fcolor-diagnostics) # Clang
+
+################################################################################
+# PolyFEM Options
+################################################################################
+
+# option(POLYFEM_WITH_TESTS          "Build tests"                                 ON)
+# option(POLYFEM_WITH_CLIPPER        "Use clipper, necessary for polygonal bases"  ON)
+
+# Polyfem options for enabling/disabling optional libraries
+# option(POLYFEM_REGENERATE_AUTOGEN  "Generate the python autogen files"          OFF)
+# set(POLYFEM_THREADING "TBB" CACHE STRING "Multithreading library to use (options: CPP, TBB, NONE)")
+
+# option(POLYSOLVE_WITH_CHOLMOD      "Enable Cholmod library"                      ON)
+# option(POLYSOLVE_WITH_UMFPACK      "Enable UmfPack library"                      ON)
+# option(POLYSOLVE_WITH_SUPERLU      "Enable SuperLU library"                      ON)
+# option(POLYSOLVE_WITH_MKL          "Enable MKL library"                          ON)
+# option(POLYSOLVE_WITH_PARDISO      "Enable Pardiso library"                     OFF)
+# option(POLYSOLVE_WITH_HYPRE        "Enable hypre"                                ON)
+# option(POLYSOLVE_WITH_AMGCL        "Use AMGCL"                                   ON)
+# option(POLYSOLVE_WITH_SPECTRA      "Enable computing spectrum"                  OFF)
+# option(POLYSOLVE_LARGE_INDEX       "Build for large indices"                    OFF)
+
+# set(POLYFEM_DATA_DIR "" CACHE PATH "Where should polyfem download and look for test data?")
+# option(POLYFEM_USE_EXISTING_DATA_DIR "Use and existing data directory instead of downloading it" OFF)

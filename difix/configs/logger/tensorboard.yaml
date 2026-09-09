@@ -1,0 +1,9 @@
+# @package _global_
+
+logger:
+  _target_: lightning.pytorch.loggers.TensorBoardLogger
+  save_dir: ${paths.output_dir}/logs
+  name: null
+  log_graph: false
+  default_hp_metric: true
+  prefix: ''

@@ -1,0 +1,24 @@
+# @package _global_
+
+defaults:
+- _self_
+- data: difix3d_training
+- model: difix3d
+- trainer: swapfix_training
+- callbacks: default
+- logger: wandb
+- paths: default
+- extras: default
+- experiment: seamfix
+- hparams_search: null
+- optional local: default
+- debug: null
+task_name: train
+tags:
+- dev
+- diffusion
+train: true
+test: false
+ckpt_path: null
+seed: null
+name: null

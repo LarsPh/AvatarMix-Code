@@ -1,0 +1,79 @@
+# @package _global_
+
+trainer:
+  _target_: lightning.pytorch.Trainer
+  max_epochs: 10
+  max_steps: -1
+  accelerator: gpu
+  devices: 1
+  strategy: auto
+  precision: 32-true
+  check_val_every_n_epoch: 5
+  limit_val_batches: 1.0
+  log_every_n_steps: 10
+  enable_progress_bar: true
+  enable_model_summary: true
+  enable_checkpointing: true
+  default_root_dir: ./outputs/difix3d_swapfix_training
+  deterministic: false
+  gradient_clip_val: 1.0
+  gradient_clip_algorithm: norm
+  accumulate_grad_batches: 1
+  detect_anomaly: false
+  track_grad_norm: -1
+  benchmark: true
+  fast_dev_run: false
+  sync_batchnorm: false
+  profiler: null
+  limit_train_batches: 1.0
+  limit_test_batches: 1.0
+  overfit_batches: 0.0
+  reload_dataloaders_every_n_epochs: 0
+  inference_mode: true
+training:
+  unet_lora:
+    enabled: false
+    rank: 4
+    alpha: 4.0
+    dropout: 0.1
+    target_modules:
+    - to_k
+    - to_q
+    - to_v
+    - to_out.0
+  swapfix_lora:
+    enabled: false
+    rank: 4
+    alpha: 4.0
+    dropout: 0.1
+  loss_weights:
+    l2_weight: 1.0
+    lpips_weight: 0.2
+    gram_weight: 0.1
+  optimizer:
+    learning_rate: 2e-5
+    weight_decay: 0.01
+    use_cosine_scheduler: true
+    scheduler_eta_min: 1e-6
+  identity:
+    enabled: false
+    normal_steps: 2
+    identity_steps: 1
+    model_name_or_path: openai/clip-vit-base-patch32
+    identity_loss_weight: 0.1
+    similarity_target: 0.85
+    reduction: mean
+    head_crop_resolution: 224
+    min_mask_area: 1000
+    padding_ratio: 0.1
+    forward_view_gt: 100_p+000
+    forward_view_swapped: 105_p+000
+    camera_range_gt:
+    - 2
+    - 3
+    camera_range_swapped:
+    - 2
+    - 3
+    filtered_pairs: []
+    identity_validation_enabled: true
+    max_identity_validation_samples: 50

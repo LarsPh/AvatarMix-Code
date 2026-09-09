@@ -1,0 +1,19 @@
+# @package _global_
+
+callbacks:
+  prediction_saver:
+    _target_: lightning_diffusers.callbacks.DiFix3DPredictionCallback
+    output_format: JPEG
+    quality: 95
+    create_dirs: true
+    log_every_n_batches: 5
+    overwrite: true
+  progress_bar:
+    _target_: lightning.pytorch.callbacks.TQDMProgressBar
+    refresh_rate: 1
+  performance_monitor:
+    _target_: lightning_diffusers.utils.PerformanceMonitor
+    log_every_n_steps: 10
+    log_memory: true
+    log_speed: true
+    log_system: false

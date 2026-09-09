@@ -1,0 +1,46 @@
+[project]
+name = "4ddress"
+version = "0.1.0"
+description = "4D-DRESS: A 4D Dataset of Real-world Human Clothing with Semantic Annotations"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch==2.7.1",
+    "torchvision==0.22.1",
+    "segment-anything",
+    "trimesh",
+    "aitviewer",
+    "matplotlib",
+    "pycocotools",
+    "scikit-image",
+    "opencv-python",
+    "numpy==1.26.4",
+    "scikit-learn",
+    "setuptools",
+    "pytorch3d",
+    "loguru",
+    "sam3",
+]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu128" },
+]
+torchvision = [
+    { index = "pytorch-cu128" },
+]
+pytorch3d = { git = "https://github.com/facebookresearch/pytorch3d.git", rev = "cbcae096a0b9b04f7c515d11bb4285a82e96b8d7" }
+sam3 = { path = "../sam3" }
+segment-anything = { git = "https://github.com/facebookresearch/segment-anything.git" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.pip]
+find-links = ["https://data.pyg.org/whl/torch-2.7.0+cu128.html"]
+only-binary = ["torch-scatter"]
+
+[tool.uv]
+no-build-isolation-package = ["pytorch3d", "torch-scatter"]

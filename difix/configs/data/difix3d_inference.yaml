@@ -1,0 +1,18 @@
+# @package _global_
+
+data:
+  _target_: lightning_diffusers.data.difix3d_datamodule.DiFix3DDataModule
+  input_dir: null
+  input_images: null
+  output_dir: null
+  output_suffix: _refined
+  prompts: remove degradation
+  batch_size: 2
+  num_workers: 0
+  skip_existing: true
+  supported_extensions:
+  - .jpg
+  - .jpeg
+  - .png
+  - .bmp
+  - .tiff

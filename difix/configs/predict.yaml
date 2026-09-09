@@ -1,0 +1,15 @@
+# @package _global_
+
+defaults:
+- _self_
+- data: difix3d_inference
+- model: difix3d
+- paths: default
+- extras: default
+- hydra: default
+task_name: predict
+train: false
+test: false
+ckpt_path: null
+compile: false
+seed: null

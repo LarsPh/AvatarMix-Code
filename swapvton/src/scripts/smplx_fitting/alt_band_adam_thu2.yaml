@@ -1,0 +1,89 @@
+global:
+  device: cuda
+  gender: auto
+  dataset_type: thuman2
+  keypoints_mode: all
+  conf_threshold: 0.95
+  collision_backend: cuda_point_face
+  collision_loss_mode: outside
+  collision_sample_n: 20000
+  freeze_wrist_pose: true
+  freeze_feet_pose: true
+  inside_margin: 0.01
+  inside_part_weights: leftArm,rightArm,leftForeArm,rightForeArm,leftLeg,rightLeg,leftUpLeg,rightUpLeg,leftFoot,rightFoot,hips,spine1
+  inside_exclude_parts: spine,spine2,leftShoulder,rightShoulder,neck,head
+  exp_name: alt_band_adam
+  vis: true
+  vis_render_size: 512
+  vis_save_mesh_ply: true
+  keypoints_detector: yolo
+  yolo_pose_model: yolov8l-pose.pt
+  yolo_det_conf: 0.3
+  keypoints_regenerate: true
+stages:
+  align_init:
+    type: smplx_fitting
+    params:
+      num_steps: 600
+      lr: 0.02
+      optimizer: adam
+      optimize:
+        betas: false
+        global_orient: true
+        transl: true
+        scale: true
+        body_pose: true
+      losses:
+        lambda_2d: 0.01
+        lambda_collision: 70.0
+        lambda_inside: 0.0
+        lambda_betas: 0.01
+        lambda_skin_head: 0.0
+        lambda_skin_hands: 0.0
+        lambda_pose_delta: 1.0
+  betas_global:
+    type: smplx_fitting
+    params:
+      num_steps: 200
+      lr: 0.001
+      optimizer: adam
+      optimize:
+        betas: true
+        global_orient: true
+        transl: true
+        scale: true
+        body_pose: false
+      losses:
+        lambda_2d: 0.01
+        lambda_collision: 150.0
+        lambda_inside: 60.0
+        lambda_betas: 0.0005
+        lambda_skin_head: 100.0
+        lambda_skin_hands: 50.0
+  pose_global:
+    type: smplx_fitting
+    params:
+      num_steps: 200
+      lr: 0.005
+      optimizer: adam
+      optimize:
+        betas: false
+        global_orient: true
+        transl: true
+        scale: true
+        body_pose: true
+      losses:
+        lambda_2d: 0.01
+        lambda_collision: 150.0
+        lambda_inside: 60.0
+        lambda_betas: 0.0
+        lambda_pose_delta: 1.0
+        lambda_skin_head: 100.0
+        lambda_skin_hands: 50.0
+pipeline:
+- stage: align_init
+- group: alternating_pose_beta
+  repeat: 4
+  stages:
+  - stage: betas_global
+  - stage: pose_global

@@ -1,0 +1,49 @@
+{
+  "components": [
+    {
+      "name": "4d-dress",
+      "url": "https://github.com/eth-ait/4d-dress.git",
+      "revision": "baf3e8f0857f7b22996512ba82a55c9530f268ce",
+      "patch": "4d-dress.patch",
+      "expected_sha256": {
+        "4dhumanparsing/lib/model/surface_parser.py": "d8fd7c50c1838ea78da26a0c2988ae829edc1d41d71fa4ab6b82d3d7e8b8c195",
+        "4dhumanparsing/lib/utility/dataset.py": "f77873e79011bc08f1494f98c5c8ca2c45ead597af4e37c2727c76b49d757b30",
+        "4dhumanparsing/lib/utility/general.py": "b20bc82b68b6d11ef28388792f71eb03b2dd4f52c7fe09d41a5e67c2ed58b0f1",
+        "4dhumanparsing/lib/utility/parser.py": "3332d47dbbd01b495668ac9bb144e863d3cdc43378881c290c2aab5155d2de85",
+        "4dhumanparsing/lib/utility/render.py": "ba0864b1c1b96b12e053e01d2d51fa14605f8bcc81b9e616e87ae0fddc1291d5",
+        "4dhumanparsing/lib/utility/sam.py": "fe968fb228ad4156377213e913d9b472df4b8f3a1fd554e92b3220bc70deec72",
+        "4dhumanparsing/lib/utility/sam3_hands.py": "b4a673d673c83bf8a3440c7415209b3ecd789ee963b257dcaaf612db9b43d33e",
+        "4dhumanparsing/multi_surface_parsing.py": "73ed7e10a833aca0e28bb8870486bd86ddf6bbf75015eda1a61d8728aad290d4",
+        "4dhumanparsing/multi_view_parsing.py": "4de88c192b129bf71ead82b7658118be4701d0f18db47c52dc01fc8454db73d9",
+        "4dhumanparsing/scripts/segment_portrait_validation_data.py": "239671c016d14873c47112a6fbe749ef97cdb45c056c1c194c5a14050415017c",
+        "4dhumanparsing/scripts/segment_swapvton_renders.py": "b52421bdc22212df9b24e04f9dfb6ab8a0481168878f676c63f5435813e150d7"
+      }
+    },
+    {
+      "name": "Graphonomy",
+      "url": "https://github.com/Gaoyiminggithub/Graphonomy.git",
+      "revision": "09e5dd4f1bc5252e19243c7106289128a9b8f062",
+      "patch": null,
+      "expected_sha256": {}
+    },
+    {
+      "name": "RAFT",
+      "url": "https://github.com/princeton-vl/RAFT.git",
+      "revision": "2888e15a51fa41140771d3f498ed8023cff098d1",
+      "patch": "RAFT.patch",
+      "expected_sha256": {
+        "core/corr.py": "4e327e0275703deae24b24c7a7c9ca849274b9a750ad40d9f424be1c5813bcde",
+        "core/raft.py": "d36524e6800d4418dbeddb69050e6161be8c4779adc5ee7c5e6a1b248c125d14"
+      }
+    },
+    {
+      "name": "pygco",
+      "url": "https://github.com/yujiali/pygco.git",
+      "revision": "7328257ab1716cbb06a6023d105dbd706db56e13",
+      "patch": "pygco.patch",
+      "expected_sha256": {
+        "pygco.py": "db51a8e5db82b6d28caeb928d3680cdbeb55df16c74aa0d6120679ec2984e14a"
+      }
+    }
+  ]
+}

@@ -1,0 +1,920 @@
+[
+    {
+        "pointer": "/",
+        "type": "object",
+        "required": [
+            "parameters",
+            "variable_to_simulation",
+            "states"
+        ],
+        "optional": [
+            "output",
+            "solver",
+            "stopping_conditions",
+            "functionals",
+            "compute_objective"
+        ],
+        "doc": "Root of the configuration file."
+    },
+    {
+        "pointer": "/functionals",
+        "type": "list",
+        "default": [],
+        "doc": "A list of functionals. Their sum is the functional being optimized."
+    },
+    {
+        "pointer": "/stopping_conditions",
+        "type": "list",
+        "default": [],
+        "doc": "A list of functionals. The optimization stops if these functionals are all negative, even if the objective gradient norm is not small enough."
+    },
+    {
+        "pointer": "/states",
+        "type": "list",
+        "doc": "Specify a numebr of simulations used in the optimization."
+    },
+    {
+        "pointer": "/states/*",
+        "type": "object",
+        "required": [
+            "path"
+        ],
+        "optional": [
+            "initial_guess"
+        ]
+    },
+    {
+        "pointer": "/states/*/path",
+        "type": "file",
+        "doc": "The json file path for this state."
+    },
+    {
+        "pointer": "/states/*/initial_guess",
+        "default": -1,
+        "type": "int",
+        "doc": "Specify the state ID, whose solution is used to initialize the solve in this state."
+    },
+    {
+        "pointer": "/output",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "log",
+            "tensorboard",
+            "profiling",
+            "progress",
+            "save_frequency",
+            "directory",
+            "solution"
+        ],
+        "doc": "Optimization output options"
+    },
+    {
+        "pointer": "/output/progress",
+        "type": "object",
+        "default": {},
+        "doc": "Optional debug progress logging (substep/phase/iteration)."
+    },
+    {
+        "pointer": "/output/progress/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, print progress lines at debug level during nonlinear iterations."
+    },
+    {
+        "pointer": "/output/progress/log_every",
+        "type": "int",
+        "default": 10,
+        "min": 1,
+        "doc": "Log a progress line every N nonlinear iterations (post_step callbacks)."
+    },
+    {
+        "pointer": "/output/directory",
+        "default": "",
+        "type": "string",
+        "doc": "Directory for output files."
+    },
+    {
+        "pointer": "/output/save_frequency",
+        "default": 1,
+        "type": "int",
+        "doc": "Optimization output frequency"
+    },
+    {
+        "pointer": "/output/log",
+        "spec_file": "log.json",
+        "type": "include",
+        "doc": "Setting for the output log."
+    },
+    {
+        "pointer": "/output/tensorboard",
+        "type": "object",
+        "default": {},
+        "doc": "Optional TensorBoard scalar logging (native event files)."
+    },
+    {
+        "pointer": "/output/tensorboard/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "Enable TensorBoard scalar logging."
+    },
+    {
+        "pointer": "/output/tensorboard/log_dir",
+        "type": "string",
+        "default": "",
+        "doc": "Optional TensorBoard log directory. If empty, defaults to <output>/tb."
+    },
+    {
+        "pointer": "/output/tensorboard/log_every",
+        "type": "int",
+        "default": 10,
+        "min": 1,
+        "doc": "Log scalars every N nonlinear iterations (post_step calls)."
+    },
+    {
+        "pointer": "/output/tensorboard/energy_every",
+        "type": "int",
+        "default": 50,
+        "min": 1,
+        "doc": "Compute and log energy every N steps (can be expensive)."
+    },
+    {
+        "pointer": "/output/tensorboard/detailed_energies",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, also log per-form weighted energy terms (enabled forms with non-zero weight)."
+    },
+    {
+        "pointer": "/output/tensorboard/flush_period_s",
+        "type": "int",
+        "default": 3,
+        "min": 1,
+        "doc": "Background flush period in seconds for the TensorBoard writer."
+    },
+    {
+        "pointer": "/output/tensorboard/max_queue_size",
+        "type": "int",
+        "default": 100000,
+        "min": 1,
+        "doc": "Max queued events before forcing a flush."
+    },
+    {
+        "pointer": "/output/tensorboard/resume",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, append to an existing event file if present."
+    },
+    {
+        "pointer": "/output/profiling",
+        "type": "object",
+        "default": {},
+        "doc": "Optional profiling outputs (Chrome trace and timing summaries)."
+    },
+    {
+        "pointer": "/output/profiling/chrome_trace",
+        "type": "object",
+        "default": {},
+        "doc": "Chrome trace timeline output. View with chrome://tracing."
+    },
+    {
+        "pointer": "/output/profiling/chrome_trace/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "Enable Chrome trace output."
+    },
+    {
+        "pointer": "/output/profiling/chrome_trace/path",
+        "type": "string",
+        "default": "",
+        "doc": "Optional path for trace.json. If empty, defaults to <output>/trace.json."
+    },
+    {
+        "pointer": "/output/profiling/timing_summary",
+        "type": "object",
+        "default": {},
+        "doc": "Aggregated timing summary from POLYFEM_SCOPED_TIMER scopes."
+    },
+    {
+        "pointer": "/output/profiling/timing_summary/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "Enable aggregated timing summary (printed at end of run)."
+    },
+    {
+        "pointer": "/output/solution",
+        "default": "",
+        "type": "file",
+        "doc": "Export optimization variables to file at every iteration."
+    },
+    {
+        "pointer": "/a2",
+        "type": "object",
+        "default": {},
+        "doc": "Optional A2 area-aware fit-weight multipliers (cloth-fit extension; may be ignored by other apps)."
+    },
+    {
+        "pointer": "/a2/enabled",
+        "type": "bool",
+        "default": false,
+        "doc": "Enable A2."
+    },
+    {
+        "pointer": "/a2/source_body_trim_path",
+        "type": "file",
+        "default": "",
+        "doc": "Path to SOURCE trimmed body mesh (triangulated)."
+    },
+    {
+        "pointer": "/a2/target_body_trim_path",
+        "type": "file",
+        "default": "",
+        "doc": "Path to TARGET trimmed body mesh (triangulated, aligned to source). Must share identical face ordering."
+    },
+    {
+        "pointer": "/a2/correspondence_path",
+        "type": "file",
+        "default": "",
+        "doc": "Garment vertex -> source body triangle correspondence file. One line per garment vertex: tri_id [dist] [b0 b1 b2]."
+    },
+    {
+        "pointer": "/a2/lambda",
+        "type": "float",
+        "default": 6.0,
+        "min": 0.0,
+        "doc": "Boost strength."
+    },
+    {
+        "pointer": "/a2/w_max",
+        "type": "float",
+        "default": 4.0,
+        "min": 1.0,
+        "doc": "Maximum A2 multiplier."
+    },
+    {
+        "pointer": "/a2/d_gate",
+        "type": "float",
+        "default": 0.05,
+        "min": 0.0,
+        "doc": "Distance gate threshold; dist>d_gate => w=1."
+    },
+    {
+        "pointer": "/a2/use_distance_gate",
+        "type": "bool",
+        "default": true,
+        "doc": "Apply distance gating if dist is present."
+    },
+    {
+        "pointer": "/a2/final_substep_only",
+        "type": "bool",
+        "default": true,
+        "doc": "Apply A2 only on final substep."
+    },
+    {
+        "pointer": "/a2/export_visualization",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, export colored PLY visualizations for A2."
+    },
+    {
+        "pointer": "/a2/enable_surf_relax",
+        "type": "bool",
+        "default": false,
+        "doc": "If true, apply A2-based local relaxation to the surface similarity term (SimilarityForm) during Step3 only."
+    },
+    {
+        "pointer": "/a2/surf_k",
+        "type": "float",
+        "default": 0.8,
+        "min": 0.0,
+        "doc": "Surface similarity relaxation strength: a2_surf = clamp(1 - surf_k*shrink, surf_min, 1)."
+    },
+    {
+        "pointer": "/a2/surf_min",
+        "type": "float",
+        "default": 0.7,
+        "min": 0.0,
+        "max": 1.0,
+        "doc": "Lower bound for local surface similarity multiplier a2_surf."
+    },
+    {
+        "pointer": "/solver",
+        "type": "object",
+        "default": null,
+        "optional": [
+            "nonlinear",
+            "advanced",
+            "max_threads",
+            "parallel_similarity_hessian",
+            "similarity_hessian_mode",
+            "similarity_hessian_use_dx_map",
+            "similarity_hessian_reserve_triplets",
+            "similarity_unique_adjacency"
+        ],
+        "doc": "Optimization solver parameters."
+    },
+    {
+        "pointer": "/solver/parallel_similarity_hessian",
+        "default": true,
+        "type": "bool",
+        "doc": "If true, assemble the SimilarityForm Hessian using maybe_parallel_for (thread-local triplets). Set false to run only this Hessian assembly serially for A/B performance testing."
+    },
+    {
+        "pointer": "/solver/similarity_hessian_mode",
+        "default": "optimized",
+        "type": "string",
+        "choices": ["optimized", "optimized_serial", "legacy"],
+        "doc": "Similarity Hessian assembly mode. optimized: parallel + dx-map + reserve. optimized_serial: serial but uses dx-map + reserve. legacy: match original behavior closely (serial, allocate V, no reserve)."
+    },
+    {
+        "pointer": "/solver/similarity_hessian_use_dx_map",
+        "default": true,
+        "type": "bool",
+        "doc": "If true, avoid allocating V=unflatten(x)+V_ by using an Eigen::Map of the displacement vector (Similarity Hessian only)."
+    },
+    {
+        "pointer": "/solver/similarity_hessian_reserve_triplets",
+        "default": true,
+        "type": "bool",
+        "doc": "If true, reserve triplet capacity based on the internal adjacency count to reduce allocator overhead (Similarity Hessian only)."
+    },
+    {
+        "pointer": "/solver/similarity_unique_adjacency",
+        "default": false,
+        "type": "bool",
+        "doc": "If true, process each interior triangle-triangle adjacency once (unique undirected edges) for SimilarityForm value/gradient/Hessian, removing the internal 1/2 compensation. Can reduce similarity gradient/Hessian work by ~2× on manifold meshes."
+    },
+    {
+        "pointer": "/solver/max_threads",
+        "default": 0,
+        "type": "int",
+        "min": 0,
+        "doc": "Maximum number of threads used; 0 is unlimited."
+    },
+    {
+        "pointer": "/solver/nonlinear",
+        "type": "include",
+        "spec_file": "nonlinear-solver-spec.json",
+        "doc": "Settings for optimization nonlinear solver. Interior-loop linear solver settings are defined in the solver/linear section"
+    },
+    {
+        "pointer": "/variable_to_simulation",
+        "type": "list",
+        "doc": "A list of mappings from the raw optimization variable to parameters in states."
+    },
+    {
+        "pointer": "/variable_to_simulation/*/type",
+        "type": "string",
+        "options": [
+            "shape",
+            "elastic",
+            "friction",
+            "damping",
+            "macro-strain",
+            "initial",
+            "dirichlet",
+            "pressure"
+        ]
+    },
+    {
+        "pointer": "/variable_to_simulation/*",
+        "type_name": "shape",
+        "type": "object",
+        "required": [
+            "state",
+            "type",
+            "composition"
+        ],
+        "optional": [
+            "composite_map_type",
+            "composite_map_indices"
+        ]
+    },
+    {
+        "pointer": "/variable_to_simulation/*",
+        "type_name": "elastic",
+        "type": "object",
+        "required": [
+            "state",
+            "type",
+            "composition"
+        ],
+        "optional": [
+            "composite_map_type",
+            "composite_map_indices"
+        ]
+    },
+    {
+        "pointer": "/variable_to_simulation/*",
+        "type_name": "friction",
+        "type": "object",
+        "required": [
+            "state",
+            "type",
+            "composition"
+        ],
+        "optional": [
+            "composite_map_type",
+            "composite_map_indices"
+        ]
+    },
+    {
+        "pointer": "/variable_to_simulation/*",
+        "type_name": "initial",
+        "type": "object",
+        "required": [
+            "state",
+            "type",
+            "composition"
+        ],
+        "optional": [
+            "composite_map_type",
+            "composite_map_indices"
+        ]
+    },
+    {
+        "pointer": "/variable_to_simulation/*",
+        "type_name": "dirichlet",
+        "type": "object",
+        "required": [
+            "state",
+            "type",
+            "composition",
+            "surface_selection"
+        ],
+        "optional": [
+            "composite_map_type",
+            "composite_map_indices"
+        ]
+    },
+    {
+        "pointer": "/variable_to_simulation/*",
+        "type_name": "pressure",
+        "type": "object",
+        "required": [
+            "state",
+            "type",
+            "composition",
+            "surface_selection"
+        ],
+        "optional": [
+            "composite_map_type",
+            "composite_map_indices"
+        ]
+    },
+    {
+        "pointer": "/variable_to_simulation/*/mesh",
+        "type": "string"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/mesh_id",
+        "type": "int"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/state",
+        "type": "int"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/state",
+        "type": "list"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/state/*",
+        "type": "int"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition",
+        "type": "list",
+        "doc": "list of parametrizations that maps raw optimization variables to parameters in simulations"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/type",
+        "type": "string",
+        "options": [
+            "per-body-to-per-elem",
+            "per-body-to-per-node",
+            "E-nu-to-lambda-mu",
+            "slice",
+            "exp",
+            "scale",
+            "power",
+            "append-values",
+            "append-const",
+            "linear-filter",
+            "bounded-biharmonic-weights",
+            "scalar-velocity-parametrization"
+        ]
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "bounded-biharmonic-weights",
+        "type": "object",
+        "required": [
+            "num_control_vertices",
+            "num_vertices",
+            "allow_rotations"
+        ],
+        "doc": "TODO"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "scalar-velocity-parametrization",
+        "type": "object",
+        "required": [
+            "start_val",
+            "dt"
+        ],
+        "doc": "TODO"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "append-const",
+        "type": "object",
+        "required": [
+            "value",
+            "size",
+            "type"
+        ],
+        "optional": [
+            "start"
+        ],
+        "doc": "Append repeated constant at the end of the input vector"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/size",
+        "type": "int"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/value",
+        "type": "float"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "append-values",
+        "type": "object",
+        "required": [
+            "values",
+            "type"
+        ],
+        "doc": "Append a list of constants at the end of the input vector"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/start",
+        "type": "int",
+        "default": -1
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/values",
+        "type": "list"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/values/*",
+        "type": "float"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "slice",
+        "type": "object",
+        "required": [
+            "type"
+        ],
+        "optional": [
+            "from",
+            "to",
+            "parameter_index",
+            "last"
+        ],
+        "doc": "Ouputs x[from:to], where x is the input vector"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/from",
+        "default": -1,
+        "type": "int"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/to",
+        "default": -1,
+        "type": "int"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/last",
+        "type": "int",
+        "default": -1
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/parameter_index",
+        "default": -1,
+        "type": "int"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "power",
+        "type": "object",
+        "required": [
+            "power",
+            "type"
+        ],
+        "doc": "Ouputs x ^ power, where x is the input vector"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/power",
+        "type": "float"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "exp",
+        "type": "object",
+        "required": [
+            "type"
+        ],
+        "optional": [
+            "from",
+            "to"
+        ],
+        "doc": "Ouputs exp(x), where x is the input vector"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "scale",
+        "type": "object",
+        "required": [
+            "type",
+            "value",
+            "type"
+        ],
+        "doc": "Ouputs x * value, where x is the input vector"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/dimension",
+        "type": "int"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation",
+        "type": "object",
+        "default": null,
+        "optional": [
+            "translation",
+            "rotation",
+            "rotation_mode",
+            "scale",
+            "dimensions"
+        ]
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation/rotation_mode",
+        "type": "string",
+        "default": "xyz",
+        "doc": "Type of rotation, supported are any permutation of [xyz]+, axis_angle, quaternion, or rotation_vector."
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation/translation",
+        "type": "list",
+        "default": [],
+        "doc": "Translate (two entries for 2D problems or three entries for 3D problems)."
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation/rotation",
+        "type": "list",
+        "default": [],
+        "doc": "Rotate, in 2D, one number, the rotation angle, in 3D, three or four Euler angles, axis+angle, or a unit quaternion. Depends on rotation mode."
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation/scale",
+        "type": "list",
+        "default": [],
+        "doc": "Scale by specified factors along axes (two entries for 2D problems or three entries for 3D problems)."
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation/dimensions",
+        "type": "float",
+        "default": 1,
+        "doc": "Scale the object so that bounding box dimensions match specified dimensions, 2 entries for 2D problems, 3 entries for 3D problems."
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation/dimensions",
+        "type": "list",
+        "doc": "Scale the object so that bounding box dimensions match specified dimensions, 2 entries for 2D problems, 3 entries for 3D problems."
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation/dimensions/*",
+        "type": "float",
+        "default": 0
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation/translation/*",
+        "type": "float",
+        "default": 0
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation/rotation/*",
+        "default": 0,
+        "type": "float"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/transformation/scale/*",
+        "default": 0,
+        "type": "float"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/dimensions",
+        "type": "list"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/dimensions/*",
+        "type": "int"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "per-body-to-per-elem",
+        "type": "object",
+        "required": [
+            "state",
+            "type"
+        ],
+        "doc": "From per volume selection to per element."
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "per-body-to-per-node",
+        "type": "object",
+        "required": [
+            "state",
+            "type"
+        ],
+        "doc": "From per volume selection to per FE node."
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "E-nu-to-lambda-mu",
+        "type": "object",
+        "required": [
+            "is_volume",
+            "type"
+        ]
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/is_volume",
+        "type": "bool"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*",
+        "type_name": "linear-filter",
+        "type": "object",
+        "required": [
+            "state",
+            "radius",
+            "type"
+        ],
+        "doc": "Apply linear smoothing filter on a field per element."
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composition/*/state",
+        "type": "int"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composite_map_type",
+        "type": "string",
+        "default": "none"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composite_map_indices",
+        "type": "file"
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composite_map_indices",
+        "type": "list",
+        "default": []
+    },
+    {
+        "pointer": "/variable_to_simulation/*/composite_map_indices/*",
+        "type": "int"
+    },
+    {
+        "pointer": "/parameters",
+        "type": "list",
+        "doc": "TODO"
+    },
+    {
+        "pointer": "/parameters/*",
+        "type": "object",
+        "optional": [
+            "number",
+            "initial"
+        ],
+        "doc": "TODO"
+    },
+    {
+        "pointer": "/parameters/*/number",
+        "type": "int"
+    },
+    {
+        "pointer": "/parameters/*/number",
+        "type": "object",
+        "required": [
+            "surface_selection",
+            "state"
+        ],
+        "default": null,
+        "doc": "TODO"
+    },
+    {
+        "pointer": "/parameters/*/number",
+        "type": "object",
+        "required": [
+            "volume_selection",
+            "state",
+            "exclude_boundary_nodes"
+        ],
+        "doc": "TODO"
+    },
+    {
+        "pointer": "/parameters/*/initial",
+        "type": "list",
+        "default": []
+    },
+    {
+        "pointer": "/parameters/*/initial/*",
+        "type": "float"
+    },
+    {
+        "pointer": "/parameters/*/initial",
+        "type": "float"
+    },
+    {
+        "pointer": "/parameters/*/state",
+        "type": "int"
+    },
+    {
+        "pointer": "/parameters/*/surface_selection",
+        "type": "list"
+    },
+    {
+        "pointer": "/parameters/*/surface_selection/*",
+        "type": "int"
+    },
+    {
+        "pointer": "/parameters/*/volume_selection",
+        "type": "list"
+    },
+    {
+        "pointer": "/parameters/*/volume_selection/*",
+        "type": "int"
+    },
+    {
+        "pointer": "/parameters/*/exclude_boundary_nodes",
+        "type": "bool"
+    },
+    {
+        "pointer": "/solver/advanced",
+        "default": null,
+        "type": "object",
+        "optional": [
+            "solve_in_parallel",
+            "solve_in_order",
+            "characteristic_length",
+            "enable_slim",
+            "smooth_line_search"
+        ],
+        "doc": "Advanced settings for arranging forward simulations"
+    },
+    {
+        "pointer": "/solver/advanced/characteristic_length",
+        "default": 1,
+        "type": "float",
+        "doc": "A scaling on the nonlinear problem for better stability."
+    },
+    {
+        "pointer": "/solver/advanced/solve_in_parallel",
+        "default": false,
+        "type": "bool",
+        "doc": "Run forward simulations in parallel."
+    },
+    {
+        "pointer": "/solver/advanced/solve_in_order",
+        "default": [],
+        "type": "list",
+        "doc": "Run forward simulations in order."
+    },
+    {
+        "pointer": "/solver/advanced/solve_in_order/*",
+        "type": "int",
+        "doc": "Id of forward simulations."
+    },
+    {
+        "pointer": "/compute_objective",
+        "type": "bool",
+        "default": false,
+        "doc": "Evaluate the functionals and exit."
+    },
+    {
+        "pointer": "/solver/advanced/enable_slim",
+        "default": false,
+        "type": "bool",
+        "doc": "Whether to apply slim smoothing to the optimization when step is accepted."
+    },
+    {
+        "pointer": "/solver/advanced/smooth_line_search",
+        "default": false,
+        "type": "bool",
+        "doc": "Whether to apply slim smoothing to the optimization line search."
+    }
+]

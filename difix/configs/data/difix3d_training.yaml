@@ -1,0 +1,52 @@
+# @package _global_
+
+data:
+  _target_: lightning_diffusers.data.difix3d_datamodule.DiFix3DDataModule
+  training_mode: true
+  degraded_dir: null
+  gt_dataset_root: null
+  reference_strategy: placeholder
+  filter_by_subjects: true
+  subject_pairs: null
+  subject_a: null
+  subject_b: null
+  test_camera_filter: null
+  fullbody_target_resolution: null
+  fullbody_min_bbox_size: null
+  fullbody_target_resolution_order: wh
+  train_split_ratio: 0.8
+  split_by_subjects: true
+  use_same_subjects_for_val: false
+  ensure_pair_consistency: true
+  prompts: remove head-swapping artifacts
+  batch_size: 2
+  num_workers: 4
+  pin_memory: true
+  supported_extensions:
+  - .jpg
+  - .jpeg
+  - .png
+  - .bmp
+  - .tiff
+  normalize_images: true
+  image_size:
+  - 512
+  - 512
+  adaptive_resolution:
+    enabled: true
+    target_resolution:
+    - 448
+    - 896
+    min_bbox_size:
+    - 64
+    - 64
+  validate_gt_existence: true
+  skip_missing_pairs: true
+  min_pairs_per_subject: 1
+  extract_subject_pattern: restored_(?P<subject_id>\d+)_from_
+  expected_camera_dirs:
+  - 000_p+00
+  - 001_p+00
+  - 002_p+00
+  verbose_mapping: false
+  log_split_statistics: true
