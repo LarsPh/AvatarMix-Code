@@ -82,7 +82,10 @@ Resume training with `ckpt_path=/absolute/path/to/checkpoint.ckpt`. To run the r
 CUDA_VISIBLE_DEVICES=0 uv run python scripts/train_swapfix_lora.py \
   experiment=seamfix train=false test=true \
   adapter_path=/absolute/path/to/seamfix.safetensors \
+  data.train_pairs_yaml=/absolute/path/to/pairs.yaml \
+  data.val_pairs_yaml=null data.skip_validation=true \
   data.test_pairs_yaml=/absolute/path/to/pairs.yaml \
+  data.validation_data_root=/absolute/path/to/head_swapped_renders \
   data.test_output_root=/absolute/path/to/refined_views
 ```
 
