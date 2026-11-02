@@ -64,12 +64,7 @@ FullbodyFix is optional and is selected by visual inspection of reshaping artifa
 
 ## Pretrained refiners
 
-| Adapter | Size | SHA-256 |
-| --- | ---: | --- |
-| [SeamFix](https://drive.google.com/file/d/1qKqfQWfRzX0QiHRktLNODKjYxHTTXjA5/view) | 12.9 MB | `bb3ac12f2aa5bb32aa5b0175147b67513b4c99bd27cf653698e9668a05337ea4` |
-| [FullbodyFix](https://drive.google.com/file/d/1rJYdTG93PtAgVWjV0vQSChjU_SpsS-vc/view) | 19.5 MB | `678aada4b5fa8c52ecbcc653ccb45a6efdb5d45697efaaa854545599f0bc20df` |
-
-These adapters require the [NVIDIA Difix backbone](https://huggingface.co/nvidia/difix) at revision `2b0c6fb5797c26b01154dfdeb19d36e5e2eaf388`; the code loads it separately. Download the adapters and place them in `external_assets/`, or set `AVATARMIX_ASSET_ROOT` to their directory. The [download folder](https://drive.google.com/drive/folders/1Xzh3jSFpdgenvDf2-8WYkN4LTdws8zZL) includes the model license and notice. Use is limited to non-commercial research/evaluation under the applicable model terms.
+Download [SeamFix](https://drive.google.com/file/d/1qKqfQWfRzX0QiHRktLNODKjYxHTTXjA5/view) and [FullbodyFix](https://drive.google.com/file/d/1rJYdTG93PtAgVWjV0vQSChjU_SpsS-vc/view) and place the files in `external_assets/`, or set `AVATARMIX_ASSET_ROOT` to their directory. The code loads the [NVIDIA Difix backbone](https://huggingface.co/nvidia/difix) separately at the pinned revision. The [download folder](https://drive.google.com/drive/folders/1Xzh3jSFpdgenvDf2-8WYkN4LTdws8zZL) includes the model license and notice. Use is limited to non-commercial research/evaluation under the applicable model terms.
 
 ## Training
 
