@@ -367,6 +367,7 @@ class DifixPipeline(
         merge_strategy: str = "weighted",
         difix_weight: float = 0.5,
         swapfix_weight: float = 0.5,
+        avatarmix_local_difix: bool = False,
         **kwargs,
     ):
         """
@@ -387,7 +388,7 @@ class DifixPipeline(
             
         # Load the base pipeline normally
         # Note: For "nvidia/difix", we need to temporarily register our pipeline class
-        if model_name_or_path == "nvidia/difix":
+        if model_name_or_path == "nvidia/difix" or avatarmix_local_difix:
             # Temporarily register our pipeline class in diffusers for proper loading
             import diffusers
             original_difix_pipeline = getattr(diffusers, 'DifixPipeline', None)

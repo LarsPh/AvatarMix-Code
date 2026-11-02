@@ -1,6 +1,6 @@
 # Data preparation
 
-The THUman2.0 configuration is the main example. Obtain the scans and fitted body parameters under the dataset's terms. Dataset files, SMPL/SMPL-X models, pretrained networks, and AvatarMix checkpoints are not included in this repository.
+The THUman2.0 configuration is the main example. Obtain the scans and fitted body parameters under the dataset's terms. Dataset files, SMPL/SMPL-X models, and pretrained networks are not included in this repository. SeamFix and FullbodyFix adapters are available from the [README](../README.md#pretrained-refiners).
 
 ## External assets
 
@@ -17,8 +17,8 @@ external_assets/
     J_regressor_body25_smplx.txt   # Required by SMPL-X fitting
     J_regressor_body25_smplx_lite.txt  # Only for the optional lite-model path
   smplx_vert_segmentation.json     # SMPL-X vertex-to-body-part index lists
-  seamfix.ckpt                     # Your trained checkpoint; release pending
-  fullbodyfix.ckpt                 # Optional; release pending
+  seamfix.safetensors              # SeamFix adapter
+  fullbodyfix.safetensors          # Optional FullbodyFix adapter
 ```
 
 Obtain body models from the [SMPL-X project](https://smpl-x.is.tue.mpg.de/). Use the model files and vertex segmentation that match your SMPL-X topology. Some tools also use auxiliary body-model correspondence/regressor files; preserve their filenames when placing them under `smpl/`.
@@ -124,6 +124,6 @@ The [README](../README.md#usage) gives the composition command. GSReshape consum
 
 SeamFix/FullbodyFix require those renders and their masks/calibration, not just a standalone image. The `difix_refinement` stage builds the refiner arguments for the selected pair. `splatting_avatar_gs_finetune` then uses the refined views to update the composed avatar. Keep the output suffix consistent across the stages; the shipped examples use a common suffix.
 
-`thuman2.yaml` selects SeamFix. `thuman2_fullbody.yaml` selects optional FullbodyFix with the same input composition. Set `paths.seamfixed_test_dir` and the refiner checkpoint path explicitly if maintaining separate outputs for the two modes. Here, `test` names refer to inference/render export.
+`thuman2.yaml` selects SeamFix. `thuman2_fullbody.yaml` selects optional FullbodyFix with the same input composition. Set `paths.seamfixed_test_dir` and the refiner adapter path explicitly if maintaining separate outputs for the two modes. Here, `test` names refer to inference/render export.
 
 See [Training](training.md) to generate double-swap examples and train the refiners.

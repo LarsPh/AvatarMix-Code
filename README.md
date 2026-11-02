@@ -52,7 +52,7 @@ uv run --project swapvton python swapvton/src/scripts/pipeline.py \
 
 Subject IDs are examples: use subjects available in your own dataset. The pair configuration controls direction, shape fitting, camera selection, and intermediate output paths.
 
-With a trained SeamFix checkpoint placed at `external_assets/seamfix.ckpt`, refine the views and update the avatar (pretrained AvatarMix checkpoints are coming soon):
+With the [SeamFix adapter](https://drive.google.com/file/d/1qKqfQWfRzX0QiHRktLNODKjYxHTTXjA5/view) placed at `external_assets/seamfix.safetensors`, refine the views and update the avatar:
 
 ```sh
 uv run --project swapvton python swapvton/src/scripts/pipeline.py \
@@ -60,7 +60,16 @@ uv run --project swapvton python swapvton/src/scripts/pipeline.py \
   --run-stages difix_refinement,splatting_avatar_gs_finetune
 ```
 
-FullbodyFix is optional and is selected by visual inspection of reshaping artifacts. Use [thuman2_fullbody.yaml](swapvton/src/configs/thuman2_fullbody.yaml) with `external_assets/fullbodyfix.ckpt` for full-body refinement. The data guide explains the intermediate artifacts these stages consume.
+FullbodyFix is optional and is selected by visual inspection of reshaping artifacts. Use [thuman2_fullbody.yaml](swapvton/src/configs/thuman2_fullbody.yaml) with the [FullbodyFix adapter](https://drive.google.com/file/d/1rJYdTG93PtAgVWjV0vQSChjU_SpsS-vc/view) at `external_assets/fullbodyfix.safetensors` for full-body refinement. The data guide explains the intermediate artifacts these stages consume.
+
+## Pretrained refiners
+
+| Adapter | Size | SHA-256 |
+| --- | ---: | --- |
+| [SeamFix](https://drive.google.com/file/d/1qKqfQWfRzX0QiHRktLNODKjYxHTTXjA5/view) | 12.9 MB | `bb3ac12f2aa5bb32aa5b0175147b67513b4c99bd27cf653698e9668a05337ea4` |
+| [FullbodyFix](https://drive.google.com/file/d/1rJYdTG93PtAgVWjV0vQSChjU_SpsS-vc/view) | 19.5 MB | `678aada4b5fa8c52ecbcc653ccb45a6efdb5d45697efaaa854545599f0bc20df` |
+
+These adapters require the [NVIDIA Difix backbone](https://huggingface.co/nvidia/difix) at revision `2b0c6fb5797c26b01154dfdeb19d36e5e2eaf388`; the code loads it separately. Download the adapters and place them in `external_assets/`, or set `AVATARMIX_ASSET_ROOT` to their directory. The [download folder](https://drive.google.com/drive/folders/1Xzh3jSFpdgenvDf2-8WYkN4LTdws8zZL) includes the model license and notice. Use is limited to non-commercial research/evaluation under the applicable model terms.
 
 ## Training
 
@@ -82,7 +91,6 @@ See [Training](docs/training.md) for double-swap data generation, pair manifests
 
 ## Release TODO
 
-- [ ] Pretrained SeamFix and FullbodyFix checkpoints
 - [ ] Example assets
 
 ## Citation
@@ -101,6 +109,8 @@ See [Training](docs/training.md) for double-swap data generation, pair manifests
 ## Acknowledgements and license
 
 AvatarMix builds on SplattingAvatar, Gaussian Splatting, Difix3D+, NeuS2, 4D-DRESS, SAM/SAM3, Intersection-Free Garment Retargeting, and Robust Skin Weights Transfer. We thank their authors for sharing their work.
+
+The optional SeamFix and FullbodyFix adapters build on NVIDIA Difix and its Stable Diffusion Turbo backbone. Powered by Stability AI.
 
 AvatarMix's original code is provided for **non-commercial research** under [LICENSE](LICENSE). Third-party code and modifications derived from it remain subject to their respective terms; see [Third-party notices](THIRD_PARTY_NOTICES.md). Model weights, body models, and datasets have separate licenses and are not bundled here.
 

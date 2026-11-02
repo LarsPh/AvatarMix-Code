@@ -22,10 +22,12 @@ def stage_difix_refinement(config: dict, subjects: List[str], debug_subprocess: 
 
     experiment = cfg.get("experiment", None)
     ckpt_path = cfg.get("ckpt_path", None)
+    adapter_path = cfg.get("adapter_path", None)
+    base_path = cfg.get("base_path", None)
     if not experiment:
         raise ValueError("32_difix_refinement requires `experiment` (Hydra experiment name)")
-    if not ckpt_path:
-        raise ValueError("32_difix_refinement requires `ckpt_path` (checkpoint for test/inference)")
+    if bool(ckpt_path) == bool(adapter_path):
+        raise ValueError("32_difix_refinement requires exactly one of `ckpt_path` or `adapter_path`")
 
 
     st13 = (config.get("pipeline_stages", {}).get("13_render_swapped_gaussians", {}) or {})
@@ -165,7 +167,8 @@ def stage_difix_refinement(config: dict, subjects: List[str], debug_subprocess: 
             "train=false",
             "test=true",
             "predict=false",
-            f"ckpt_path={ckpt_path}",
+            f"adapter_path={adapter_path}" if adapter_path else f"ckpt_path={ckpt_path}",
+            *([f"base_path={base_path}"] if base_path else []),
             f"data.refinement_mode={refinement_mode}",
             f"data.degraded_dir={degraded_dir}",
             f"data.gt_dataset_root={gt_dataset_root}",

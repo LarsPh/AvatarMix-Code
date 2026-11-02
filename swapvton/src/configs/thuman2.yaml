@@ -355,7 +355,9 @@ pipeline_stages:
   32_difix_refinement:
     enabled: true
     experiment: seamfix
-    ckpt_path: ${AVATARMIX_ASSET_ROOT}/seamfix.ckpt
+    ckpt_path: null
+    adapter_path: ${AVATARMIX_ASSET_ROOT}/seamfix.safetensors
+    base_path: null
     refinement_mode: partial
     run_both_directions: true
     use_head_alignment: false

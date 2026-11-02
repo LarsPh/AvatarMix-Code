@@ -355,7 +355,9 @@ pipeline_stages:
   32_difix_refinement:
     enabled: true
     experiment: fullbodyfix
-    ckpt_path: ${AVATARMIX_ASSET_ROOT}/fullbodyfix.ckpt
+    ckpt_path: null
+    adapter_path: ${AVATARMIX_ASSET_ROOT}/fullbodyfix.safetensors
+    base_path: null
     refinement_mode: full
     run_both_directions: true
     use_head_alignment: false

@@ -76,14 +76,16 @@ FullbodyFix training uses 448×896 images. The `fullbody_target_resolution` opti
 
 ## Resume and inference
 
-Resume training with `ckpt_path=/absolute/path/to/checkpoint.ckpt`. To run the refiner's inference/export mode on a prepared pair manifest:
+Resume training with `ckpt_path=/absolute/path/to/checkpoint.ckpt`. To run the refiner's inference/export mode on a prepared pair manifest, download the compact adapter from the [README](../README.md#pretrained-refiners):
 
 ```sh
 CUDA_VISIBLE_DEVICES=0 uv run python scripts/train_swapfix_lora.py \
   experiment=seamfix train=false test=true \
-  ckpt_path=/absolute/path/to/seamfix.ckpt \
+  adapter_path=/absolute/path/to/seamfix.safetensors \
   data.test_pairs_yaml=/absolute/path/to/pairs.yaml \
   data.test_output_root=/absolute/path/to/refined_views
 ```
 
-For a complete composition/refinement run, prefer the pipeline's `difix_refinement` stage, which supplies the per-pair input paths. Use `experiment=fullbodyfix` and the matching checkpoint for full-body refinement. The `test` switch invokes image inference/export.
+The adapter contains the trained UNet/VAE LoRA weights and VAE skip connections, not the full backbone. The loader pins `nvidia/difix` to the revision recorded in the adapter. If you have that exact backbone snapshot locally, pass `base_path=/absolute/path/to/nvidia_difix_base` for offline use. The legacy full Lightning checkpoint remains supported through `ckpt_path`; set exactly one of `adapter_path` or `ckpt_path` for testing.
+
+For a complete composition/refinement run, prefer the pipeline's `difix_refinement` stage, which supplies the per-pair input paths. Use `experiment=fullbodyfix` and the matching adapter for full-body refinement. The `test` switch invokes image inference/export.

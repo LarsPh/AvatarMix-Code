@@ -14,6 +14,8 @@ train: true
 test: false
 predict: false
 ckpt_path: null
+adapter_path: null
+base_path: null
 data:
   train_pairs_yaml: ${oc.env:AVATARMIX_DATA_ROOT,../data}/thuman2_avatarrex/pairs/train.yaml
   val_pairs_yaml: ${oc.env:AVATARMIX_DATA_ROOT,../data}/thuman2_avatarrex/pairs/val.yaml

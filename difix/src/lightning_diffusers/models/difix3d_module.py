@@ -115,6 +115,9 @@ class DiFix3DModule(L.LightningModule):
         lora_alpha: float = 32.0,
         lora_dropout: float = 0.1,
         target_modules: List[str] = None,
+        release_adapter_path: str = None,
+        release_adapter_variant: str = None,
+        release_base_path: str = None,
 
 
         l2_weight: float = 1.0,
@@ -143,6 +146,18 @@ class DiFix3DModule(L.LightningModule):
 
 
         self.model_name = model_name
+        self.release_adapter_path = release_adapter_path
+        self.release_adapter_variant = release_adapter_variant
+        self.release_base_path = release_base_path
+        self._release_adapter_loaded = False
+        self.model_revision = None
+        if release_adapter_path:
+            from .refiner_adapter import read_adapter_metadata
+
+            metadata = read_adapter_metadata(release_adapter_path)
+            if metadata["variant"] != release_adapter_variant or metadata["base_model"] != model_name:
+                raise ValueError("AvatarMix adapter does not match the selected experiment")
+            self.model_revision = metadata["base_revision"]
         self.prompt = prompt
         self.num_inference_steps = num_inference_steps
         self.timesteps = timesteps or [199]
@@ -218,19 +233,25 @@ class DiFix3DModule(L.LightningModule):
 
 
         if hasattr(self, 'pipe') and self.pipe is not None:
-            logger.info("Pipeline already configured, skipping configure_model()")
-            return
+            if not self.release_adapter_path or self._release_adapter_loaded:
+                logger.info("Pipeline already configured")
+                return
 
         logger.info(f"=== configure_model(): Creating pipeline for checkpoint loading ===")
         logger.info(f"Training mode: {self.training_mode}")
 
-        if self.training_mode:
+        if self.pipe is None:
+            if self.training_mode:
+                self._setup_pipeline_with_lora()
+                self._setup_loss_functions()
+            else:
+                self._setup_pipeline_inference_only()
 
-            self._setup_pipeline_with_lora()
-            self._setup_loss_functions()
-        else:
+        if self.release_adapter_path:
+            from .refiner_adapter import load_adapter
 
-            self._setup_pipeline_inference_only()
+            load_adapter(self, self.release_adapter_path, self.release_adapter_variant)
+            self._release_adapter_loaded = True
 
     def setup(self, stage: str) -> None:
 
@@ -240,20 +261,9 @@ class DiFix3DModule(L.LightningModule):
         self._validate_stage_training_mode_combination(stage)
 
 
-        if not hasattr(self, 'pipe') or self.pipe is None:
-            logger.warning("Pipeline not found in setup(), creating now (fallback for Lightning <2.0)")
-            logger.warning("Note: Lightning 2.0+ is required for proper checkpoint loading with LoRA!")
-
-
-            if self.training_mode:
-
-                logger.info(f"Creating pipeline WITH LoRA (training_mode=True, stage={stage})")
-                self._setup_pipeline_with_lora()
-                self._setup_loss_functions()
-            else:
-
-                logger.info(f"Creating inference pipeline WITHOUT LoRA (training_mode=False, stage={stage})")
-                self._setup_pipeline_inference_only()
+        if self.pipe is None or (self.release_adapter_path and not self._release_adapter_loaded):
+            logger.info("Initializing pipeline in setup()")
+            self.configure_model()
 
 
     def _validate_lightning_version(self) -> None:
@@ -305,9 +315,11 @@ class DiFix3DModule(L.LightningModule):
         try:
             logger.info(f"Loading DiFix3D+ pipeline for inference from {self.model_name}...")
             self.pipe = DifixPipeline.from_pretrained(
-                self.model_name,
+                self.release_base_path or self.model_name,
                 trust_remote_code=self.trust_remote_code,
                 torch_dtype=self.torch_dtype,
+                avatarmix_local_difix=bool(self.release_base_path),
+                **({"revision": self.model_revision} if self.model_revision and not self.release_base_path else {}),
             )
 
 
@@ -328,11 +340,13 @@ class DiFix3DModule(L.LightningModule):
 
 
             self.pipe = DifixPipeline.from_pretrained(
-                self.model_name,
+                self.release_base_path or self.model_name,
                 model_type="auto",
                 lora_mode=self.lora_training_mode,
                 trust_remote_code=self.trust_remote_code,
                 torch_dtype=self.torch_dtype,
+                avatarmix_local_difix=bool(self.release_base_path),
+                **({"revision": self.model_revision} if self.model_revision and not self.release_base_path else {}),
             )
 
 

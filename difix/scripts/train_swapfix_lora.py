@@ -94,6 +94,9 @@ def setup_identity_preserving_training(cfg: DictConfig):
 
 
     model = IdentityPreservingDiFix3DModule(
+        release_adapter_path=cfg.get("adapter_path"),
+        release_adapter_variant=cfg.get("task_name"),
+        release_base_path=cfg.get("base_path"),
         training_mode=cfg.model.training_mode,
         model_name=cfg.model.get("model_name", "nvidia/difix"),
         prompt=cfg.model.get("prompt", "remove degradation"),
@@ -250,6 +253,9 @@ def setup_partial_refinement_training(cfg: DictConfig):
 
 
     model = PartialRefinementModule(
+        release_adapter_path=cfg.get("adapter_path"),
+        release_adapter_variant=cfg.get("task_name"),
+        release_base_path=cfg.get("base_path"),
         training_mode=cfg.model.training_mode,
         model_name=cfg.model.get("model_name", "nvidia/difix"),
         prompt=cfg.model.get("prompt", "remove degradation"),
@@ -344,6 +350,9 @@ def setup_vanilla_training(cfg: DictConfig):
 
 
     model = DiFix3DModule(
+        release_adapter_path=cfg.get("adapter_path"),
+        release_adapter_variant=cfg.get("task_name"),
+        release_base_path=cfg.get("base_path"),
         training_mode=cfg.model.training_mode,
         model_name=cfg.model.get("model_name", "nvidia/difix"),
         prompt=cfg.model.get("prompt", "remove degradation"),
@@ -653,18 +662,19 @@ def main(cfg: DictConfig) -> None:
 
 
             ckpt_path = cfg.get('ckpt_path', None)
-            if not ckpt_path:
-                logger.error("Testing requires a checkpoint path!")
-                logger.error("Please provide: ckpt_path='path/to/checkpoint.ckpt'")
+            adapter_path = cfg.get('adapter_path', None)
+            if bool(ckpt_path) == bool(adapter_path):
+                logger.error("Set exactly one of ckpt_path or adapter_path for testing")
                 sys.exit(1)
 
 
             from pathlib import Path
-            if not Path(ckpt_path).exists():
-                logger.error(f"Checkpoint file not found: {ckpt_path}")
+            selected_path = adapter_path or ckpt_path
+            if not Path(selected_path).exists():
+                logger.error(f"Checkpoint file not found: {selected_path}")
                 sys.exit(1)
 
-            logger.info(f"Loading checkpoint: {ckpt_path}")
+            logger.info(f"Loading checkpoint: {selected_path}")
 
 
             logger.info("Test configuration:")
